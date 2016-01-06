@@ -1,0 +1,23 @@
+{
+  "name": "reputation-vip/queue-client",
+  "description": "Queue Client",
+  "authors": [
+    {
+      "name": "Nicolas Couet",
+      "email": "tejerka@gmail.com"
+    }
+  ],
+  "require": {
+    "symfony/filesystem": ">=2.7",
+    "symfony/finder": ">=2.7",
+    "aws/aws-sdk-php": ">=2.7"
+  },
+  "require-dev": {
+    "atoum/atoum": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "ReputationVIP\\QueueClient\\": "src"
+    }
+  }
+}
