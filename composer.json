@@ -13,7 +13,8 @@
     "aws/aws-sdk-php": ">=2.7"
   },
   "require-dev": {
-    "atoum/atoum": "dev-master"
+    "atoum/atoum": "dev-master",
+    "satooshi/php-coveralls": "dev-master"
   },
   "autoload": {
     "psr-4": {
