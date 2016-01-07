@@ -7,7 +7,11 @@ Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/ru
 
 use \mageekguy\atoum;
 
-$cloverWriter = new atoum\writers\file('clover.xml');
+$cloverWriter = new atoum\writers\file('build/logs/clover.xml');
+$stdOutWriter = new \mageekguy\atoum\writers\std\out();
+$cli = new \mageekguy\atoum\reports\realtime\cli();
+$cli->addWriter($stdOutWriter);
 $cloverReport = new atoum\reports\asynchronous\clover();
 $cloverReport->addWriter($cloverWriter);
 $runner->addReport($cloverReport);
+$runner->addReport($cli);
