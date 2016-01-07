@@ -4,9 +4,8 @@ php:
 
 script: 
  - composer install
- - php vendor/atoum/atoum/bin/atoum -d tests/units/
  - mkdir -p build/logs
- - mv coverage.xml build/logs/clover.xml
+ - php vendor/atoum/atoum/bin/atoum -c travis-coverage.php -d tests/units/
 
 after_script:
  - php vendor/bin/coveralls -v

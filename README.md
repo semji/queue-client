@@ -1,5 +1,7 @@
 # Queue Client
 
+[![Last Build status](https://travis-ci.org/tejerka/queue-client.svg?branch=master)](https://travis-ci.org/tejerka/queue-client/branches) [![Coverage Status](https://coveralls.io/repos/tejerka/queue-client/badge.svg?branch=master&service=github)](https://coveralls.io/github/tejerka/queue-client?branch=master) 
+
 Queue Client is a PHP library that provides a queue abstraction layer (SQS, File, Memory ...).
 
 ## Use case
