@@ -2,7 +2,7 @@
 
 - [Installation](#installation)
 - [Core Concepts](#core-concepts)
-- [Configuring a logger](#configuring-a-logger)
+- [Configuring Queue Client](#configuring-queue-client)
 
 ## Installation
 
@@ -21,7 +21,7 @@ If you want to change your queue system just switch adapter.
 
 For example you could use a file storage adapter in development environment and a in-memory storage adapter in production.
 
-## Configuring a queue client
+## Configuring queue client
 
 Here is a basic setup to use file storage with three priority level:
 
