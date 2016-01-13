@@ -2,8 +2,6 @@
 
 namespace ReputationVIP\QueueClient\tests\units;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use mageekguy\atoum;
 use ReputationVIP\QueueClient\Adapter\MemoryAdapter;
 

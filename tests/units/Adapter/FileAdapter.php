@@ -2,8 +2,6 @@
 
 namespace ReputationVIP\QueueClient\tests\units\Adapter;
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
-
 use ArrayIterator;
 use mageekguy\atoum;
 use ReputationVIP\QueueClient\PriorityHandler\ThreeLevelPriorityHandler;

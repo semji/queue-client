@@ -2,8 +2,6 @@
 
 namespace ReputationVIP\QueueClient\tests\units\PriorityHandler;
 
-require_once __DIR__ . '/../../../vendor/autoload.php';
-
 use mageekguy\atoum;
 
 class StandardPriorityHandler extends atoum\test

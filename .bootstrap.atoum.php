@@ -1,3 +1,3 @@
 <?php
 
-$runner->addTestsFromDirectory(__DIR__ . '/tests/units');
+require_once __DIR__ . '/vendor/autoload.php';

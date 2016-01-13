@@ -5,7 +5,7 @@ php:
 script: 
  - composer install
  - mkdir -p build/logs
- - php vendor/atoum/atoum/bin/atoum -c travis-coverage.php -d tests/units/
+ - php vendor/atoum/atoum/bin/atoum -c travis-coverage.php
 
 after_script:
  - php vendor/bin/coveralls -v
