@@ -2,8 +2,6 @@
 
 namespace ReputationVIP\QueueClient\tests\units;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use mageekguy\atoum;
 use ReputationVIP\QueueClient\Adapter\MemoryAdapter;
 
@@ -11,38 +9,43 @@ class QueueClient extends atoum\test
 {
     public function testQueueClient__construct()
     {
-        $this->class(new \ReputationVIP\QueueClient\QueueClient())->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->testedClass->implements('ReputationVIP\QueueClient\QueueClientInterface');
     }
 
-    public function testQueueClientAddMessageWithAlias()
+    public function testQueueClientAddMessageWithAlias(MemoryAdapter $adapter)
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
-
-        $queueClient->createQueue('testQueueOne');
-        $queueClient->createQueue('testQueueTwo');
-        $queueClient->addAlias('testQueueOne', 'queueAlias');
-        $this->class($queueClient->addMessage('queueAlias', 'testMessage'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
-        $queueClient->addAlias('testQueueTwo', 'queueAlias');
-        $this->class($queueClient->addMessage('queueAlias', 'testMessage'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this
+            ->given($this->newTestedInstance($adapter))
+            ->when(
+                $this->testedInstance->createQueue('testQueueOne'),
+                $this->testedInstance->createQueue('testQueueTwo'),
+                $this->testedInstance->addAlias('testQueueOne', 'queueAlias')
+            )
+            ->then
+                ->object($this->testedInstance->addMessage('queueAlias', 'testMessage'))->isTestedInstance()
+            ->when($this->testedInstance->addAlias('testQueueTwo', 'queueAlias'))
+            ->then
+                ->object($this->testedInstance->addMessage('queueAlias', 'testMessage'))->isTestedInstance()
+        ;
     }
 
     public function testQueueClientAddMessage()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $this->class($queueClient->addMessage('testQueue', 'testMessage'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->addMessage('testQueue', 'testMessage'))->isTestedInstance();
     }
 
     public function testQueueClientAddMessages()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $this->class($queueClient->addMessages('testQueue', ['testMessageOne', 'testMessageTwo', 'testMessageThree']))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->addMessages('testQueue', ['testMessageOne', 'testMessageTwo', 'testMessageThree']))->isTestedInstance();
     }
 
     public function testQueueClientGetMessagesWithAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
@@ -55,7 +58,7 @@ class QueueClient extends atoum\test
 
     public function testQueueClientGetMessages()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueue');
         $this->given($queueClient)
@@ -64,7 +67,7 @@ class QueueClient extends atoum\test
 
     public function testQueueClientDeleteMessageWithAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
@@ -77,22 +80,22 @@ class QueueClient extends atoum\test
 
     public function testQueueClientDeleteMessage()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
         $queueClient->createQueue('testQueue');
-        $this->class($queueClient->deleteMessage('testQueue', 'testMessage'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->deleteMessage('testQueue', 'testMessage'))->isTestedInstance();
     }
 
     public function testQueueClientDeleteMessages()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $this->class($queueClient->deleteMessages('testQueue', ['testMessageOne', 'testMessageTwo', 'testMessageThree']))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->deleteMessages('testQueue', ['testMessageOne', 'testMessageTwo', 'testMessageThree']))->isTestedInstance();
     }
 
     public function testQueueClientIsEmptyWithAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
@@ -105,16 +108,15 @@ class QueueClient extends atoum\test
 
     public function testQueueClientIsEmpty()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $queueClient->createQueue('testQueue');
-        $this->given($queueClient)
+        $this->given($queueClient->createQueue('testQueue'))
             ->boolean($queueClient->isEmpty('testQueue'));
     }
 
     public function testQueueClientGetNumberMessageWithAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
@@ -127,61 +129,60 @@ class QueueClient extends atoum\test
 
     public function testQueueClientNumberMessage()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $queueClient->createQueue('testQueue');
-        $this->given($queueClient)
-            ->integer($queueClient->getNumberMessages('testQueue'));
+        $this->given($queueClient->createQueue('testQueue'))
+            ->integer($queueClient->getNumberMessages('testQueue'))->isZero();
     }
 
     public function testQueueClientDeleteQueueWithAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueue');
         $queueClient->addAlias('testQueue', 'queueAliasOne');
         $queueClient->addAlias('testQueue', 'queueAliasTwo');
-        $this->class($queueClient->deleteQueue('testQueue'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->deleteQueue('testQueue'))->isTestedInstance();
         $this->given($queueClient)
             ->array($queueClient->getAliases())->isEmpty();
     }
 
     public function testQueueClientDeleteQueue()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $this->class($queueClient->deleteQueue('testQueue'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->deleteQueue('testQueue'))->isTestedInstance();
     }
 
     public function testQueueClientCreateQueue()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $this->class($queueClient->createQueue('testQueue'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->createQueue('testQueue'))->isTestedInstance();
     }
 
     public function testQueueClientRenameQueueWithAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueue');
         $queueClient->addAlias('testQueue', 'queueAliasOne');
         $queueClient->addAlias('testQueue', 'queueAliasTwo');
-        $this->class($queueClient->renameQueue('testQueue', 'testRenameQueue'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->renameQueue('testQueue', 'testRenameQueue'))->isTestedInstance();
         $this->given($queueClient)
             ->array($queueClient->getAliases())->isIdenticalTo(['queueAliasOne' => ['testRenameQueue'], 'queueAliasTwo' => ['testRenameQueue']]);
     }
 
     public function testQueueClientRenameQueue()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $this->class($queueClient->renameQueue('testQueue', 'testRenameQueue'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->renameQueue('testQueue', 'testRenameQueue'))->isTestedInstance();
     }
 
     public function testQueueClientPurgeQueueWithAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
@@ -194,15 +195,15 @@ class QueueClient extends atoum\test
 
     public function testQueueClientPurgeQueue()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
         $queueClient->createQueue('testQueue');
-        $this->class($queueClient->purgeQueue('testQueue'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->purgeQueue('testQueue'))->isTestedInstance();
     }
 
     public function testQueueClientListQueue()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueue');
         $queueClient->createQueue('testRegexQueue');
@@ -217,7 +218,7 @@ class QueueClient extends atoum\test
 
     public function testQueueClientAddAliasWithEmptyAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueue');
         $this->exception(function() use($queueClient) {
@@ -227,7 +228,7 @@ class QueueClient extends atoum\test
 
     public function testQueueClientAddAliasWithEmptyQueueName()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueue');
         $this->exception(function() use($queueClient) {
@@ -237,7 +238,7 @@ class QueueClient extends atoum\test
 
     public function testQueueClientAddAliasOnUndefinedQueue()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $this->exception(function() use($queueClient) {
             $queueClient->addAlias('testQueue', 'queueAlias');
@@ -246,19 +247,19 @@ class QueueClient extends atoum\test
 
     public function testQueueClientAddAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
-        $this->class($queueClient->addAlias('testQueueOne', 'queueAlias'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
-        $this->class($queueClient->addAlias('testQueueTwo', 'queueAlias'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->addAlias('testQueueOne', 'queueAlias'))->isTestedInstance();
+        $this->object($queueClient->addAlias('testQueueTwo', 'queueAlias'))->isTestedInstance();
         $this->given($queueClient)
             ->array($queueClient->getAliases())->isIdenticalTo(['queueAlias' => ['testQueueOne', 'testQueueTwo']]);
     }
 
     public function testQueueClientRemoveAliasWithUndefinedAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $this->exception(function() use($queueClient) {
             $queueClient->RemoveAlias('queueAlias');
@@ -267,20 +268,20 @@ class QueueClient extends atoum\test
 
     public function testQueueClientRemoveAlias()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
         $queueClient->addAlias('testQueueOne', 'queueAliasOne');
         $queueClient->addAlias('testQueueTwo', 'queueAliasTwo');
-        $this->class($queueClient->removeAlias('queueAliasOne'))->hasInterface('ReputationVIP\QueueClient\QueueClientInterface');
+        $this->object($queueClient->removeAlias('queueAliasOne'))->isTestedInstance();
         $this->given($queueClient)
             ->array($queueClient->getAliases())->isIdenticalTo(['queueAliasTwo' => ['testQueueTwo']]);
     }
 
     public function testQueueClientGetAliases()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient(new MemoryAdapter());
+        $queueClient = $this->newTestedInstance(new MemoryAdapter());
 
         $queueClient->createQueue('testQueueOne');
         $queueClient->createQueue('testQueueTwo');
@@ -293,8 +294,8 @@ class QueueClient extends atoum\test
 
     public function testQueueClientGetPriorityHandler()
     {
-        $queueClient = new \ReputationVIP\QueueClient\QueueClient();
+        $queueClient = $this->newTestedInstance();
 
-        $this->class($queueClient->getPriorityHandler())->hasInterface('ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface');
+        $this->object($queueClient->getPriorityHandler())->isInstanceOf('ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface');
     }
 }
