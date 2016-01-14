@@ -34,10 +34,9 @@ class FileAdapter extends atoum\test
             });
     }
 
-    public function testFileAdapter__construct()
+    public function testFileAdapterClass()
     {
-        $this->given()
-            ->class(new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->testedClass->implements('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testFileAdapterDeleteQueue()

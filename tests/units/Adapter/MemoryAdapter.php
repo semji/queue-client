@@ -9,10 +9,9 @@ class MemoryAdapter extends atoum\test
 {
     public function testMemoryAdapterCreateQueue()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
-
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter->createQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($this->newTestedInstance)
+            ->object($this->testedInstance->createQueue('testQueue'))->isTestedInstance()
+        ;
     }
 
     public function testMemoryAdapterCreateQueueWithEmptyQueueName()
@@ -35,39 +34,46 @@ class MemoryAdapter extends atoum\test
 
     public function testMemoryAdapterCreateQueueWithQueueExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
-
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->createQueue('testQueue');
-        });
+        $this
+            ->given($this->newTestedInstance)
+            ->when($this->testedInstance->createQueue('testQueue'))
+            ->then
+                ->exception(function() {
+                    $this->testedInstance->createQueue('testQueue');
+                })
+        ;
     }
 
     public function testMemoryAdapterDeleteQueue()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
-
-        $MemoryAdapter->createQueue('testQueue');
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter->deleteQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this
+            ->given($this->newTestedInstance)
+            ->when($this->testedInstance->createQueue('testQueue'))
+            ->then
+                ->object($this->testedInstance->deleteQueue('testQueue'))->isTestedInstance()
+        ;
     }
 
     public function testMemoryAdapterDeleteQueueWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
-
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->deleteQueue('');
-        });
+        $this
+            ->given($this->newTestedInstance)
+            ->then
+                ->exception(function() {
+                    $this->testedInstance->deleteQueue('');
+                })
+        ;
     }
 
     public function testMemoryAdapterDeleteQueueWithQueueDoesNotExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
-
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->deleteQueue('testQueue');
-        });
+        $this
+            ->given($this->newTestedInstance)
+            ->then
+                ->exception(function() {
+                    $this->testedInstance->deleteQueue('testQueue');
+                })
+        ;
     }
 
     public function testMemoryAdapterRenameQueue()
