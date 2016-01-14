@@ -20,6 +20,16 @@ class MockIOExceptionInterface extends \Exception implements IOExceptionInterfac
 
 class FileAdapter extends atoum\test
 {
+    public function testFileAdapterClass()
+    {
+        $this->testedClass->implements('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+    }
+
+    public function testFileAdapter__construct()
+    {
+        $this->object($this->newTestedInstance('/tmp/test/'));
+    }
+
     public function testFileAdapter__constructWithFilesystemError(Filesystem $fs, Finder $finder, LockHandlerFactory $lockHandlerFactory)
     {
         $this->exception(function () use($fs, $finder, $lockHandlerFactory) {
@@ -32,11 +42,6 @@ class FileAdapter extends atoum\test
         $this->exception(function () use($fs, $finder, $lockHandlerFactory) {
                 $this->newTestedInstance('/tmp/test/', null, $fs, $finder, $lockHandlerFactory);
             });
-    }
-
-    public function testFileAdapterClass()
-    {
-        $this->testedClass->implements('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testFileAdapterDeleteQueue()
