@@ -2,7 +2,9 @@
 
 [![Join the chat at https://gitter.im/ReputationVIP/queue-client](https://badges.gitter.im/ReputationVIP/queue-client.svg)](https://gitter.im/ReputationVIP/queue-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Last Build status](https://travis-ci.org/tejerka/queue-client.svg?branch=master)](https://travis-ci.org/tejerka/queue-client/branches) [![Coverage Status](https://coveralls.io/repos/tejerka/queue-client/badge.svg?branch=master&service=github)](https://coveralls.io/github/tejerka/queue-client?branch=master) 
+[![Build Status](https://travis-ci.org/ReputationVIP/queue-client.svg?branch=master)](https://travis-ci.org/ReputationVIP/queue-client)
+
+[![Coverage Status](https://coveralls.io/repos/ReputationVIP/queue-client/badge.svg?branch=master&service=github)](https://coveralls.io/github/ReputationVIP/queue-client?branch=master)
 
 Queue Client is a PHP library that provides a queue abstraction layer (SQS, File, Memory ...).
 
