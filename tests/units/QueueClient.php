@@ -12,10 +12,10 @@ class QueueClient extends atoum\test
         $this->testedClass->implements('ReputationVIP\QueueClient\QueueClientInterface');
     }
 
-    public function testQueueClientAddMessageWithAlias()
+    public function testQueueClientAddMessageWithAlias(MemoryAdapter $adapter)
     {
         $this
-            ->given($this->newTestedInstance(new MemoryAdapter()))
+            ->given($this->newTestedInstance($adapter))
             ->when(
                 $this->testedInstance->createQueue('testQueueOne'),
                 $this->testedInstance->createQueue('testQueueTwo'),
