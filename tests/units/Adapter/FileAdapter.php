@@ -6,6 +6,9 @@ use ArrayIterator;
 use mageekguy\atoum;
 use ReputationVIP\QueueClient\PriorityHandler\ThreeLevelPriorityHandler;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
 
 class MockIOExceptionInterface extends \Exception implements IOExceptionInterface {
 
@@ -17,21 +20,17 @@ class MockIOExceptionInterface extends \Exception implements IOExceptionInterfac
 
 class FileAdapter extends atoum\test
 {
-    public function testFileAdapter__constructWithFilesystemError()
+    public function testFileAdapter__constructWithFilesystemError(Filesystem $fs, Finder $finder, LockHandlerFactory $lockHandlerFactory)
     {
-        $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
-        $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
-
-        $this->exception(function () use($mockFs, $mockFinder, $mockLockHandlerFactory) {
-                new \ReputationVIP\QueueClient\Adapter\FileAdapter('', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
+        $this->exception(function () use($fs, $finder, $lockHandlerFactory) {
+                $this->newTestedInstance('', null, $fs, $finder, $lockHandlerFactory);
             });
-        $mockFs->getMockController()->mkdir = function($repository) {
-            throw new MockIOExceptionInterface('');
-        };
-        $mockFs->getMockController()->exists = false;
-        $this->exception(function () use($mockFs, $mockFinder, $mockLockHandlerFactory) {
-                new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
+
+        $this->calling($fs)->mkdir->throw = new MockIOExceptionInterface;
+        $this->calling($fs)->exists = false;
+
+        $this->exception(function () use($fs, $finder, $lockHandlerFactory) {
+                $this->newTestedInstance('/tmp/test/', null, $fs, $finder, $lockHandlerFactory);
             });
     }
 
@@ -47,9 +46,9 @@ class FileAdapter extends atoum\test
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
         $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
 
-        $mockFs->getMockController()->exists = true;
+        $this->calling($mockFs)->exists = true;
         $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function($repository) {
+        $this->calling($mockLockHandlerFactory)->getLockHandler = function($repository) {
             $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
             $mockLockHandler->getMockController()->lock = true;
             return $mockLockHandler;
@@ -76,9 +75,9 @@ class FileAdapter extends atoum\test
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
         $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
 
-        $mockFs->getMockController()->exists = false;
+        $this->calling($mockFs)->exists = false;
         $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function($repository) {
+        $this->calling($mockLockHandlerFactory)->getLockHandler = function($repository) {
             $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
             $mockLockHandler->getMockController()->lock = true;
             return $mockLockHandler;
@@ -95,8 +94,8 @@ class FileAdapter extends atoum\test
         $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
 
         $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
-        $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler =  function($repository) {
+        $this->calling($mockFs)->exists = true;
+        $this->calling($mockLockHandlerFactory)->getLockHandler =  function($repository) {
             $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
             $mockLockHandler->getMockController()->lock = false;
             return $mockLockHandler;
