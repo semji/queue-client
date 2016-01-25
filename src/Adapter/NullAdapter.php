@@ -26,14 +26,6 @@ class NullAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function addMessage($queueName, $message, $priority = null)
-    {
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
         return [];
