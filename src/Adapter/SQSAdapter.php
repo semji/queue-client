@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 
-class SQSAdapter implements AdapterInterface
+class SQSAdapter extends AbstractAdapter implements AdapterInterface
 {
     /**
      * @var SqsClient

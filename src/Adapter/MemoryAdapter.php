@@ -7,7 +7,7 @@ use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use SplQueue;
 
-class MemoryAdapter implements AdapterInterface
+class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 {
     const MAX_TIME_IN_FLIGHT = 30;
 

@@ -5,7 +5,7 @@ namespace ReputationVIP\QueueClient\Adapter;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 
-class NullAdapter implements AdapterInterface
+class NullAdapter extends AbstractAdapter implements AdapterInterface
 {
 
     /** @var PriorityHandlerInterface $priorityHandler */

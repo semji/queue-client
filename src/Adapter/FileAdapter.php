@@ -12,7 +12,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class FileAdapter implements AdapterInterface
+class FileAdapter extends AbstractAdapter implements AdapterInterface
 {
     const QUEUE_FILE_EXTENSION = 'queue';
     const MAX_NB_MESSAGES = 10;
