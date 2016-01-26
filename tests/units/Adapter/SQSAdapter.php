@@ -62,7 +62,31 @@ class SQSAdapter extends atoum\test
         $mockSqsClient->getMockController()->sendMessageBatch = function () {
         };
         $this->given($SQSAdapter)
-            ->class($SQSAdapter->addMessages('testQueue', ['test message', 'test message 2']))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+            ->class($SQSAdapter->addMessages('testQueue', array_fill(0, 11, 'test message')))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+    }
+
+    public function testSQSAdapterAddMessagesWithEmptyMessage()
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $this->mockGenerator->shuntParentClassCalls();
+        $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
+        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+
+        $this->exception(function() use($SQSAdapter) {
+            $SQSAdapter->addMessages('testQueue', ['test message', '']);
+        });
+    }
+
+    public function testSQSAdapterAddMessagesWithEmptyQueueName()
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $this->mockGenerator->shuntParentClassCalls();
+        $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
+        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+
+        $this->exception(function() use($SQSAdapter) {
+            $SQSAdapter->addMessages('', ['']);
+        });
     }
 
     public function testSQSAdapterGetMessagesWithEmptyQueueName()
