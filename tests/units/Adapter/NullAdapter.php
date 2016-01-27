@@ -13,6 +13,12 @@ class NullAdapter extends atoum\test
         $this->given($NullAdapter)->class($NullAdapter->addMessage('testQueue', 'test Message one'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
+    public function testNullAdapterAddMessages()
+    {
+        $NullAdapter = new \ReputationVIP\QueueClient\Adapter\NullAdapter();
+        $this->given($NullAdapter)->class($NullAdapter->addMessages('testQueue', ['test Message one']))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+    }
+
     public function testNullAdapterGetMessages()
     {
         $NullAdapter = new \ReputationVIP\QueueClient\Adapter\NullAdapter();

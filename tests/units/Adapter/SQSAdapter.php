@@ -48,6 +48,47 @@ class SQSAdapter extends atoum\test
             ->class($SQSAdapter->addMessage('testQueue', 'test message'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
+    public function testSQSAdapterAddMessages()
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $this->mockGenerator->shuntParentClassCalls();
+        $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
+        $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
+        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+
+        $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
+            return $mockQueueUrlModel;
+        };
+        $mockSqsClient->getMockController()->sendMessageBatch = function () {
+        };
+        $this->given($SQSAdapter)
+            ->class($SQSAdapter->addMessages('testQueue', array_fill(0, 11, 'test message')))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+    }
+
+    public function testSQSAdapterAddMessagesWithEmptyMessage()
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $this->mockGenerator->shuntParentClassCalls();
+        $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
+        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+
+        $this->exception(function() use($SQSAdapter) {
+            $SQSAdapter->addMessages('testQueue', ['test message', '']);
+        });
+    }
+
+    public function testSQSAdapterAddMessagesWithEmptyQueueName()
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $this->mockGenerator->shuntParentClassCalls();
+        $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
+        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+
+        $this->exception(function() use($SQSAdapter) {
+            $SQSAdapter->addMessages('', ['']);
+        });
+    }
+
     public function testSQSAdapterGetMessagesWithEmptyQueueName()
     {
         $this->mockGenerator->orphanize('__construct');

@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 
-class SQSAdapter implements AdapterInterface
+class SQSAdapter extends AbstractAdapter implements AdapterInterface
 {
     /**
      * @var SqsClient
@@ -19,6 +19,7 @@ class SQSAdapter implements AdapterInterface
     private $priorityHandler;
 
     const MAX_NB_MESSAGES = 10;
+    const SENT_MESSAGES_BATCH_SIZE = 10;
     const PRIORITY_SEPARATOR = '-';
 
     /**
@@ -48,6 +49,51 @@ class SQSAdapter implements AdapterInterface
         }
 
         $this->priorityHandler = $priorityHandler;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addMessages($queueName, $messages, $priority = null)
+    {
+        if (null === $priority) {
+            $priority = $this->priorityHandler->getDefault();
+        }
+
+        if (empty($queueName)) {
+            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+        }
+
+        $batchMessages = [];
+        $batchesCount = 0;
+        $blockCounter = 0;
+
+        foreach ($messages as $index => $message) {
+            if (empty($message)) {
+                throw new InvalidArgumentException('Parameter message empty or not defined.');
+            }
+            $messageData = [
+                'Id' => (string) $index,
+                'MessageBody' => serialize($message)
+            ];
+            if ($blockCounter >= self::SENT_MESSAGES_BATCH_SIZE) {
+                $blockCounter = 0;
+                $batchesCount++;
+            } else {
+                $blockCounter++;
+            }
+            $batchMessages[$batchesCount][] = $messageData;
+        }
+
+        foreach ($batchMessages as $messages) {
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+            $this->sqsClient->sendMessageBatch([
+                'QueueUrl' => $queueUrl,
+                'Entries' => $messages,
+            ]);
+        }
+
         return $this;
     }
 

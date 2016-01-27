@@ -53,13 +53,10 @@ class QueueClient implements QueueClientInterface
      */
     public function addMessage($queueName, $message, $priority = null)
     {
-        $queues = $this->resolveAliasQueueName($queueName);
-        if (is_array($queues)) {
-            foreach ($queues as $queue) {
-                $this->adapter->addMessage($queue, $message, $priority);
-            }
-        } else {
-            $this->adapter->addMessage($queues, $message, $priority);
+        $queues = (array) $this->resolveAliasQueueName($queueName);
+
+        foreach ($queues as $queue) {
+            $this->adapter->addMessage($queue, $message, $priority);
         }
 
         return $this;
@@ -70,8 +67,10 @@ class QueueClient implements QueueClientInterface
      */
     public function addMessages($queueName, $messages, $priority = null)
     {
-        foreach ($messages as $message) {
-            $this->addMessage($queueName, $message, $priority);
+        $queues = (array) $this->resolveAliasQueueName($queueName);
+
+        foreach ($queues as $queue) {
+            $this->adapter->addMessages($queue, $messages, $priority);
         }
 
         return $this;
