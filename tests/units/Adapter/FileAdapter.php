@@ -418,7 +418,7 @@ class FileAdapter extends atoum\test
                 $mockSplFileInfo->getMockController()->getExtension = function () { return \ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION; };
                 $mockSplFileInfo->getMockController()->getRelativePathname = function () use($file) { return $file; };
                 $mockSplFileInfo->getMockController()->getPathname = function () use($file) { return '/tmp/test/' . $file; };
-                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null,"Body":"s:12:\"Test message\";"}]}'; };
+                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null, "delayed-until":null,"time-in-flight":null, "delayed-until":null,"Body":"s:12:\"Test message\";"}]}'; };
                 $mocksSplFileInfo[] = $mockSplFileInfo;
             }
             return new ArrayIterator($mocksSplFileInfo);
@@ -918,7 +918,7 @@ class FileAdapter extends atoum\test
                 $mockSplFileInfo->getMockController()->getExtension = function () { return \ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION; };
                 $mockSplFileInfo->getMockController()->getRelativePathname = function () use($file) { return $file; };
                 $mockSplFileInfo->getMockController()->getPathname = function () use($file) { return '/tmp/test/' . $file; };
-                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null,"Body":"s:16:\"test message two\";"}]}'; };
+                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null, "delayed-until":null,"delayed-until":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null, "delayed-until":null,"Body":"s:16:\"test message two\";"}]}'; };
                 $mocksSplFileInfo[] = $mockSplFileInfo;
             }
             return new ArrayIterator($mocksSplFileInfo);
@@ -1106,7 +1106,7 @@ class FileAdapter extends atoum\test
                 $mockSplFileInfo->getMockController()->getExtension = function () { return \ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION; };
                 $mockSplFileInfo->getMockController()->getRelativePathname = function () use($file) { return $file; };
                 $mockSplFileInfo->getMockController()->getPathname = function () use($file) { return '/tmp/test/' . $file; };
-                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null,"Body":"s:16:\"test message two\";"}]}'; };
+                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null, "delayed-until":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null, "delayed-until":null,"Body":"s:16:\"test message two\";"}]}'; };
                 $mocksSplFileInfo[] = $mockSplFileInfo;
             }
             return new ArrayIterator($mocksSplFileInfo);
@@ -1316,7 +1316,7 @@ class FileAdapter extends atoum\test
                 $mockSplFileInfo->getMockController()->getExtension = function () { return \ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION; };
                 $mockSplFileInfo->getMockController()->getRelativePathname = function () use($file) { return $file; };
                 $mockSplFileInfo->getMockController()->getPathname = function () use($file) { return '/tmp/test/' . $file; };
-                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null,"Body":"s:16:\"test message two\";"}]}'; };
+                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null, "delayed-until":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null, "delayed-until":null,"Body":"s:16:\"test message two\";"}]}'; };
                 $mocksSplFileInfo[] = $mockSplFileInfo;
             }
             return new ArrayIterator($mocksSplFileInfo);
@@ -1374,7 +1374,7 @@ class FileAdapter extends atoum\test
                 $mockSplFileInfo->getMockController()->getExtension = function () { return \ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION; };
                 $mockSplFileInfo->getMockController()->getRelativePathname = function () use($file) { return $file; };
                 $mockSplFileInfo->getMockController()->getPathname = function () use($file) { return '/tmp/test/' . $file; };
-                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null,"Body":"s:16:\"test message two\";"}]}'; };
+                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[{"id":"testQueue-HIGH559f77704e87c5.40358915","time-in-flight":null, "delayed-until":null,"Body":"s:12:\"Test message\";"},{"id":"testQueue-HIGH559f9a97733a01.98514574","time-in-flight":null, "delayed-until":null,"Body":"s:16:\"test message two\";"}]}'; };
                 $mocksSplFileInfo[] = $mockSplFileInfo;
             }
             return new ArrayIterator($mocksSplFileInfo);
