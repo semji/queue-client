@@ -102,7 +102,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws SqsException
      */
-    public function addMessage($queueName, $message, $priority = null, $delaySeconds = null)
+    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
         if (null === $priority) {
             $priority = $this->priorityHandler->getDefault();

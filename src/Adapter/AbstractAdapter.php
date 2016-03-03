@@ -27,7 +27,7 @@ class AbstractAdapter
      * @param string $queueName
      * @param mixed  $message
      * @param string $priority
-     * @param int $delay
+     * @param int $delaySeconds
      *
      * @return AdapterInterface
      */
