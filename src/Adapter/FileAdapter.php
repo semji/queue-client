@@ -186,11 +186,12 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param string $message
      * @param string $priority
      * @param int $nbTries
+     * @param int $delaySeconds
      *
      * @return AdapterInterface
      * @throws \Exception
      */
-    private function addMessageLock($queueName, $message, $priority, $nbTries = 0)
+    private function addMessageLock($queueName, $message, $priority, $nbTries = 0, $delaySeconds = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
@@ -200,7 +201,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             }
             usleep(10);
 
-            return $this->addMessageLock($queueName, $message, $priority, ($nbTries + 1));
+            return $this->addMessageLock($queueName, $message, $priority, ($nbTries + 1), $delaySeconds);
         }
         try {
             $content = '';
@@ -220,6 +221,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $new_message = [
                 'id' => uniqid($queueName . $priority, true),
                 'time-in-flight' => null,
+                'delayed-until' => time() + $delaySeconds,
                 'Body' => serialize($message),
             ];
             array_push($queue['queue'], $new_message);
@@ -236,7 +238,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function addMessage($queueName, $message, $priority = null)
+    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
         if (null === $priority) {
             $priority = $this->priorityHandler->getDefault();
@@ -297,7 +299,9 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             }
             foreach ($queue['queue'] as $key => $message) {
                 $timeDiff = time() - $message['time-in-flight'];
-                if (null === $message['time-in-flight'] || $timeDiff > static::MAX_TIME_IN_FLIGHT) {
+                if ((null === $message['time-in-flight'] || $timeDiff > self::MAX_TIME_IN_FLIGHT)
+                    && $message['delayedUntil'] < time()
+                ) {
                     $queue['queue'][$key]['time-in-flight'] = time();
                     $message['time-in-flight'] = time();
                     $message['Body'] = unserialize($message['Body']);

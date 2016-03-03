@@ -51,12 +51,12 @@ class QueueClient implements QueueClientInterface
     /**
      * @inheritdoc
      */
-    public function addMessage($queueName, $message, $priority = null)
+    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
         $queues = (array) $this->resolveAliasQueueName($queueName);
 
         foreach ($queues as $queue) {
-            $this->adapter->addMessage($queue, $message, $priority);
+            $this->adapter->addMessage($queue, $message, $priority, $delaySeconds);
         }
 
         return $this;
