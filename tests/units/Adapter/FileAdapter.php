@@ -646,6 +646,44 @@ class FileAdapter extends atoum\test
             ->class($FileAdapter->addMessage('testQueue', 'test Message one'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
+    public function testFileAdapterAddMessageWithDelay()
+    {
+        $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
+        $mockFinder = new \mock\Symfony\Component\Finder\Finder;
+        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+
+        $priorityHandler = new ThreeLevelPriorityHandler();
+        $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', $priorityHandler, $mockFs, $mockFinder, $mockLockHandlerFactory);
+        $mockFs->getMockController()->exists = true;
+        $mockLockHandlerFactory->getMockController()->getLockHandler = function($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
+            $mockLockHandler->getMockController()->lock = true;
+            return $mockLockHandler;
+        };
+        $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
+            $files = [];
+            $priorities = $priorityHandler->getAll();
+            foreach ($priorities as $priority) {
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+            }
+            $mocksSplFileInfo = [];
+            foreach ($files as $file) {
+                $mockSplFileInfo = new \mock\Symfony\Component\Finder\SplFileInfo('', '', '');
+
+                $mockSplFileInfo->getMockController()->getExtension = function () { return \ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION; };
+                $mockSplFileInfo->getMockController()->getRelativePathname = function () use($file) { return $file; };
+                $mockSplFileInfo->getMockController()->getPathname = function () use($file) { return '/tmp/test/' . $file; };
+                $mockSplFileInfo->getMockController()->getContents = function () use($file) { return '{"queue":[]}'; };
+                $mocksSplFileInfo[] = $mockSplFileInfo;
+            }
+            return new ArrayIterator($mocksSplFileInfo);
+        };
+        $FileAdapter = $FileAdapter->addMessage('testQueue', 'test Message one', null, 1);
+        sleep(1);
+        $this->given($FileAdapter)
+            ->class($FileAdapter)->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+    }
+
     public function testFileAdapterAddMessageWithEmptyQueueName()
     {
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;

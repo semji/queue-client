@@ -171,6 +171,17 @@ class MemoryAdapter extends atoum\test
             ->class($MemoryAdapter->AddMessage('testQueue', 'test message'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
+    public function testMemoryAdapterAddMessageWithDelay()
+    {
+        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+
+        $MemoryAdapter->createQueue('testQueue');
+        $MemoryAdapter = $MemoryAdapter->AddMessage('testQueue', 'test message', null, 1);
+        sleep(1);
+        $this->given($MemoryAdapter)
+            ->class($MemoryAdapter)->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+    }
+
     public function testMemoryAdapterAddMessageWithEmptyQueueName()
     {
         $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
