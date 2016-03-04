@@ -221,7 +221,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -298,7 +298,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -334,7 +334,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -371,7 +371,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -409,7 +409,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -472,7 +472,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -509,7 +509,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -540,10 +540,10 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testOneQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
-                $files[] = 'prefixTestTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
-                $files[] = 'testTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
-                $files[] = 'testThreeQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testOneQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'prefixTestTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testThreeQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -573,10 +573,10 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testOneQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
-                $files[] = 'prefixTestTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
-                $files[] = 'testTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
-                $files[] = 'prefixTestOneQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testOneQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'prefixTestTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testTwoQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'prefixTestOneQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -628,7 +628,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -761,7 +761,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -797,7 +797,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -875,7 +875,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -911,7 +911,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -947,7 +947,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -1063,7 +1063,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -1099,7 +1099,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -1135,7 +1135,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -1177,7 +1177,7 @@ class FileAdapter extends atoum\test
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', $priorityHandler, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $mockFs->getMockController()->exists = false;
         $this->exception(function() use($fileAdapter, $priorityHandler) {
-            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()]);
+            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()->getLevel()]);
         });
     }
 
@@ -1204,7 +1204,7 @@ class FileAdapter extends atoum\test
         $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', $priorityHandler, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $mockFs->getMockController()->exists = true;
         $this->exception(function() use($FileAdapter, $priorityHandler) {
-            $FileAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest()]);
+            $FileAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest()->getLevel()]);
         });
     }
 
@@ -1249,7 +1249,7 @@ class FileAdapter extends atoum\test
             return $mockLockHandler;
         };
         $this->exception(function() use($fileAdapter, $priorityHandler) {
-            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()]);
+            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()->getLevel()]);
         });
     }
 
@@ -1271,7 +1271,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -1286,7 +1286,7 @@ class FileAdapter extends atoum\test
             return new ArrayIterator($mocksSplFileInfo);
         };
         $this->exception(function() use($fileAdapter, $priorityHandler) {
-            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()]);
+            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()->getLevel()]);
         });
     }
 
@@ -1308,7 +1308,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -1322,8 +1322,8 @@ class FileAdapter extends atoum\test
             }
             return new ArrayIterator($mocksSplFileInfo);
         };
-        $this->exception(function() use($fileAdapter, $priorityHandler) {
-            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()]);
+       $this->exception(function() use($fileAdapter, $priorityHandler) {
+            $fileAdapter->deleteMessage('testQueue', ['id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()->getLevel()]);
         });
     }
 
@@ -1345,7 +1345,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
@@ -1360,7 +1360,7 @@ class FileAdapter extends atoum\test
             return new ArrayIterator($mocksSplFileInfo);
         };
         $this->given($fileAdapter)
-            ->class($fileAdapter->deleteMessage('testQueue', array('id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest())))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+            ->class($fileAdapter->deleteMessage('testQueue', array('id' => 'testQueue-HIGH559f77704e87c5.40358915', 'priority' => $priorityHandler->getHighest()->getLevel())))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testFileAdapterRenameQueueWithEmptyParameter()
@@ -1403,7 +1403,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {

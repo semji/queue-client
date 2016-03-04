@@ -3,6 +3,8 @@
 namespace ReputationVIP\QueueClient\tests\units\Adapter;
 
 use mageekguy\atoum;
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
+use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use ReputationVIP\QueueClient\PriorityHandler\ThreeLevelPriorityHandler;
 
 class MemoryAdapter extends atoum\test
@@ -158,7 +160,7 @@ class MemoryAdapter extends atoum\test
 
         $memoryAdapter->createQueue('testQueue');
         $this->exception(function() use($memoryAdapter) {
-            $memoryAdapter->purgeQueue('testQueue', 'BAD_PRIORITY');
+            $memoryAdapter->purgeQueue('testQueue', new Priority('BAD_PRIORITY', 100));
         });
     }
 
@@ -217,7 +219,7 @@ class MemoryAdapter extends atoum\test
 
         $memoryAdapter->createQueue('testQueue');
         $this->exception(function() use($memoryAdapter) {
-            $memoryAdapter->addMessage('testQueue', 'test message', 'BAD_PRIORITY');
+            $memoryAdapter->AddMessage('testQueue', 'test message', new Priority('BAD_PRIORITY', 100));
         });
     }
 
@@ -257,7 +259,7 @@ class MemoryAdapter extends atoum\test
 
         $memoryAdapter->createQueue('testQueue');
         $this->exception(function() use($memoryAdapter) {
-            $memoryAdapter->isEmpty('testQueue', 'BAD_PRIORITY');
+            $memoryAdapter->isEmpty('testQueue', new Priority('BAD_PRIORITY', 100));
         });
     }
 
@@ -323,7 +325,7 @@ class MemoryAdapter extends atoum\test
 
         $memoryAdapter->createQueue('testQueue');
         $this->exception(function() use($memoryAdapter) {
-            $memoryAdapter->getNumberMessages('testQueue', 'BAD_PRIORITY');
+            $memoryAdapter->getNumberMessages('testQueue', new Priority('BAD_PRIORITY', 100));
         });
     }
 
@@ -452,7 +454,7 @@ class MemoryAdapter extends atoum\test
         $memoryAdapter->createQueue('testQueue');
         $memoryAdapter->addMessage('testQueue', 'test message');
         $this->exception(function() use($memoryAdapter) {
-            $memoryAdapter->getMessages('testQueue', 1, 'BAD_PRIORITY');
+            $memoryAdapter->getMessages('testQueue', 1, new Priority('BAD_PRIORITY', 100));
         });
     }
 

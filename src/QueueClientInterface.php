@@ -2,6 +2,7 @@
 
 namespace ReputationVIP\QueueClient;
 
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 
 interface QueueClientInterface
@@ -9,7 +10,7 @@ interface QueueClientInterface
     /**
      * @param string $queueName
      * @param mixed  $message
-     * @param string $priority
+     * @param Priority $priority
      * @param int $delaySeconds
      *
      * @return QueueClientInterface
@@ -19,7 +20,7 @@ interface QueueClientInterface
     /**
      * @param string $queueName
      * @param array  $messages
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return QueueClientInterface
      */
@@ -27,7 +28,7 @@ interface QueueClientInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      * @param int $nbMsg
      *
      * @return array
@@ -52,7 +53,7 @@ interface QueueClientInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return bool
      */
@@ -60,7 +61,7 @@ interface QueueClientInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return int
      */
@@ -90,7 +91,7 @@ interface QueueClientInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return QueueClientInterface
      */

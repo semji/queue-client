@@ -244,7 +244,7 @@ class SQSAdapter extends atoum\test
             return null;
         };
         $this->given($sqsAdapter)
-            ->class($sqsAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest(), 'ReceiptHandle' => 'testReceiptHandle']))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+            ->class($sqsAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest()->getLevel(), 'ReceiptHandle' => 'testReceiptHandle']))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterIsEmptyWithEmptyQueueName()

@@ -4,6 +4,7 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
@@ -99,22 +100,22 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return string
      */
-    private function getQueuePath($queueName, $priority)
+    private function getQueuePath($queueName, Priority $priority)
     {
         $prioritySuffix = '';
-        if ('' !== $priority) {
-            $prioritySuffix = static::PRIORITY_SEPARATOR . $priority;
+        if ('' !== $priority->getName()) {
+            $prioritySuffix = static::PRIORITY_SEPARATOR . $priority->getName();
         }
         return (rtrim($this->repository, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $queueName . $prioritySuffix . '.' . static::QUEUE_FILE_EXTENSION);
     }
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      * @param int $nbTries
      *
      * @return array
@@ -122,7 +123,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws \Exception
      */
-    private function readQueueFromFile($queueName, $priority, $nbTries = 0)
+    private function readQueueFromFile($queueName, Priority $priority, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
@@ -157,7 +158,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      * @param array $queue
      * @param int $nbTries
      *
@@ -166,7 +167,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws \Exception
      */
-    private function writeQueueInFile($queueName, $priority, $queue, $nbTries = 0)
+    private function writeQueueInFile($queueName, Priority $priority, $queue, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
@@ -191,7 +192,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @param string $queueName
      * @param string $message
-     * @param string $priority
+     * @param Priority $priority
      * @param int $nbTries
      * @param int $delaySeconds
      *
@@ -201,7 +202,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \UnexpectedValueException
      * @throws \Exception
      */
-    private function addMessageLock($queueName, $message, $priority, $nbTries = 0, $delaySeconds = 0)
+    private function addMessageLock($queueName, $message, Priority $priority, $nbTries = 0, $delaySeconds = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
@@ -229,7 +230,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 throw new \UnexpectedValueException('Queue content bad format.');
             }
             $new_message = [
-                'id' => uniqid($queueName . $priority, true),
+                'id' => uniqid($queueName . $priority->getLevel(), true),
                 'time-in-flight' => null,
                 'delayed-until' => time() + $delaySeconds,
                 'Body' => serialize($message),
@@ -252,7 +253,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws InvalidMessageException
      * @throws QueueAccessException
      */
-    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
+    public function addMessage($queueName, $message, Priority $priority = null, $delaySeconds = 0)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -277,7 +278,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      * @param int $nbMsg
      * @param int $nbTries
      *
@@ -287,7 +288,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \UnexpectedValueException
      * @throws \Exception
      */
-    private function getMessagesLock($queueName, $nbMsg, $priority, $nbTries = 0)
+    private function getMessagesLock($queueName, $nbMsg, Priority $priority, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
@@ -323,7 +324,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                     $queue['queue'][$key]['time-in-flight'] = time();
                     $message['time-in-flight'] = time();
                     $message['Body'] = unserialize($message['Body']);
-                    $message['priority'] = $priority;
+                    $message['priority'] = $priority->getLevel();
                     $messages[] = $message;
                     --$nbMsg;
                     if (0 === $nbMsg) {
@@ -348,7 +349,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    public function getMessages($queueName, $nbMsg = 1, $priority = null)
+    public function getMessages($queueName, $nbMsg = 1, Priority $priority = null)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -386,7 +387,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @param string $queueName
      * @param string $message
-     * @param string $priority
+     * @param Priority $priority
      * @param int $nbTries
      *
      * @return AdapterInterface
@@ -395,7 +396,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \UnexpectedValueException
      * @throws \Exception
      */
-    private function deleteMessageLock($queueName, $message, $priority, $nbTries = 0)
+    private function deleteMessageLock($queueName, $message, Priority $priority, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
@@ -467,11 +468,13 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidMessageException('Message priority not found in message.');
         }
 
-        if (!$this->fs->exists($this->getQueuePath($queueName, $message['priority']))) {
-            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+        $priority = $this->priorityHandler->getPriorityByLevel($message['priority']);
+
+        if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before use it.");
         }
 
-        $this->deleteMessageLock($queueName, $message, $message['priority']);
+        $this->deleteMessageLock($queueName, $message, $priority);
 
         return $this;
     }
@@ -483,7 +486,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws \UnexpectedValueException
      */
-    public function isEmpty($queueName, $priority = null)
+    public function isEmpty($queueName, Priority $priority = null)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -517,7 +520,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws \UnexpectedValueException
      */
-    public function getNumberMessages($queueName, $priority = null)
+    public function getNumberMessages($queueName, Priority $priority = null)
     {
         $nbrMsg = 0;
 
@@ -554,13 +557,13 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      * @param int $nbTries
      *
      * @return AdapterInterface
      * @throws QueueAccessException
      */
-    private function deleteQueueLock($queueName, $priority, $nbTries = 0)
+    private function deleteQueueLock($queueName, Priority $priority, $nbTries = 0)
     {
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
@@ -601,12 +604,12 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    private function createQueueLock($queueName, $priority)
+    private function createQueueLock($queueName, Priority $priority)
     {
         if (strpos($queueName, ' ') !== false) {
             throw new \InvalidArgumentException('Queue name must not contain white spaces.');
@@ -676,7 +679,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws \UnexpectedValueException
      */
-    public function purgeQueue($queueName, $priority = null)
+    public function purgeQueue($queueName, Priority $priority = null)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -723,7 +726,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 $priorities = $this->priorityHandler->getAll();
                 foreach ($priorities as $priority) {
                     if (!empty($priority)) {
-                        $implode = str_replace(static::PRIORITY_SEPARATOR . $priority, '', $implode);
+                        $implode = str_replace(static::PRIORITY_SEPARATOR . $priority->getName(), '', $implode);
                     }
                 }
                 $result[] = $implode;

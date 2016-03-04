@@ -2,26 +2,52 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
+use Pheanstalk\Pheanstalk;
+use Pheanstalk\PheanstalkInterface;
 use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 
-class NullAdapter extends AbstractAdapter implements AdapterInterface
+class BeanstalkdAdapter extends AbstractAdapter implements AdapterInterface
 {
+
+    const DEFAULT_HOST = '127.0.0.1';
 
     /** @var PriorityHandlerInterface $priorityHandler */
     private $priorityHandler;
 
+    /** @var PheanstalkInterface $pheanstalkInterface */
+    private $pheanstalkInterface;
+
     /**
+     * @param PheanstalkInterface $pheanstalkInterface
      * @param PriorityHandlerInterface|null $priorityHandler
      */
-    public function __construct(PriorityHandlerInterface $priorityHandler = null)
+    public function __construct(PheanstalkInterface $pheanstalkInterface = null, PriorityHandlerInterface $priorityHandler = null)
     {
         if (null === $priorityHandler) {
             $priorityHandler = new StandardPriorityHandler();
         }
 
+        if (null === $pheanstalkInterface) {
+            $pheanstalkInterface = new Pheanstalk(static::DEFAULT_HOST);
+        }
+
+        $this->pheanstalkInterface = $pheanstalkInterface;
         $this->priorityHandler = $priorityHandler;
+    }
+
+    /**
+     * @param string $queueName
+     * @param mixed  $message
+     * @param Priority $priority
+     *
+     * @return AdapterInterface
+     */
+    public function addMessage($queueName, $message, Priority $priority = null)
+    {
+
+        return $this;
     }
 
     /**

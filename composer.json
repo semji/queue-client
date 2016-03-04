@@ -10,7 +10,8 @@
   "require": {
     "symfony/filesystem": ">=2.7",
     "symfony/finder": ">=2.7",
-    "aws/aws-sdk-php": ">=2.7"
+    "aws/aws-sdk-php": ">=2.7",
+    "pda/pheanstalk": "^3.1"
   },
   "require-dev": {
     "atoum/atoum": "~2",
