@@ -143,7 +143,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             foreach ($this->queues[$queueName][$priority] as $key => $message) {
                 $timeDiff = time() - $message['time-in-flight'];
                 if ((null === $message['time-in-flight'] || $timeDiff > self::MAX_TIME_IN_FLIGHT)
-                    && $message['delayed-until'] < time()
+                    && $message['delayed-until'] <= time()
                 ) {
                     $splQueueContent = $this->queues[$queueName][$priority][$key];
                     $splQueueContent['time-in-flight'] = time();

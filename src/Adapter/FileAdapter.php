@@ -300,7 +300,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             foreach ($queue['queue'] as $key => $message) {
                 $timeDiff = time() - $message['time-in-flight'];
                 if ((null === $message['time-in-flight'] || $timeDiff > self::MAX_TIME_IN_FLIGHT)
-                    && $message['delayed-until'] < time()
+                    && $message['delayed-until'] <= time()
                 ) {
                     $queue['queue'][$key]['time-in-flight'] = time();
                     $message['time-in-flight'] = time();
