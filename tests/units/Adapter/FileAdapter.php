@@ -51,8 +51,6 @@ class FileAdapter extends atoum\test
         $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
 
         $this->calling($mockFs)->exists = true;
-        $this->calling($mockFs)->remove =  function($repository) {};
-
         $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->calling($mockLockHandlerFactory)->getLockHandler = function($repository) {
             $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
