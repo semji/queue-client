@@ -83,7 +83,7 @@ class QueueClient implements QueueClientInterface
     {
         $queues = $this->resolveAliasQueueName($queueName);
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->getMessages($queues, $nbMsg, $priority);
         }
@@ -96,7 +96,7 @@ class QueueClient implements QueueClientInterface
     {
         $queues = $this->resolveAliasQueueName($queueName);
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             $this->adapter->deleteMessage($queues, $message);
         }
@@ -124,7 +124,7 @@ class QueueClient implements QueueClientInterface
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->isEmpty($queues, $priority);
         }
@@ -138,7 +138,7 @@ class QueueClient implements QueueClientInterface
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->getNumberMessages($queues, $priority);
         }
@@ -199,7 +199,7 @@ class QueueClient implements QueueClientInterface
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             $this->adapter->purgeQueue($queues, $priority);
         }
@@ -233,7 +233,7 @@ class QueueClient implements QueueClientInterface
         $listQueues = $this->listQueues();
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('QueueName is empty.');
+            throw new InvalidArgumentException('Queue name is empty.');
         }
 
         if (empty($alias)) {

@@ -244,14 +244,14 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $priority = $this->priorityHandler->getDefault();
         }
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (empty($message)) {
-            throw new InvalidArgumentException('Parameter message empty or not defined.');
+            throw new InvalidArgumentException('Message empty or not defined.');
         }
 
         $this->addMessageLock($queueName, $message, $priority);
@@ -344,17 +344,17 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!is_numeric($nbMsg)) {
-            throw new InvalidArgumentException('Parameter number is not a number.');
+            throw new InvalidArgumentException('Number of messages must be numeric.');
         }
         if ($nbMsg <= 0 || $nbMsg > static::MAX_NB_MESSAGES) {
-            throw new InvalidArgumentException('Parameter number is not valid.');
+            throw new InvalidArgumentException('Number of messages is not valid.');
         }
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         return $this->getMessagesLock($queueName, $nbMsg, $priority);
     }
@@ -417,14 +417,14 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     public function deleteMessage($queueName, $message)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (empty($message)) {
-            throw new InvalidArgumentException('Parameter message empty or not defined.');
+            throw new InvalidArgumentException('Message empty or not defined.');
         }
         if (!is_array($message)) {
-            throw new InvalidArgumentException('message must be an array.');
+            throw new InvalidArgumentException('Message must be an array.');
         }
         if (!isset($message['id'])) {
             throw new InvalidArgumentException('Message id not found in message.');
@@ -433,7 +433,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Message priority not found in message.');
         }
         if (!$this->fs->exists($this->getQueuePath($queueName, $message['priority']))) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $this->deleteMessageLock($queueName, $message, $message['priority']);
@@ -456,11 +456,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);
@@ -488,11 +488,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);
@@ -520,7 +520,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function deleteQueueLock($queueName, $priority, $nbTries = 0)
     {
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queueFilePath = $this->getQueuePath($queueName, $priority);
@@ -543,7 +543,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     public function deleteQueue($queueName)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -563,10 +563,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function createQueueLock($queueName, $priority)
     {
         if ($this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new \Exception('Queue with name ' . $queueName . ' already exist.');
+            throw new \Exception('A queue named ' . $queueName . ' already exist.');
         }
         if (strpos($queueName, ' ') !== false) {
-            throw new \Exception('QueueName must not contain any space.');
+            throw new \Exception('Queue name must not contain white spaces.');
         }
 
         $queue = [
@@ -581,7 +581,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     public function createQueue($queueName)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -598,11 +598,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
         if (empty($sourceQueueName)) {
-            throw new InvalidArgumentException('Parameter sourceQueueName empty or not defined.');
+            throw new InvalidArgumentException('Source queue name empty or not defined.');
         }
 
         if (empty($targetQueueName)) {
-            throw new InvalidArgumentException('Parameter targetQueueName empty or not defined.');
+            throw new InvalidArgumentException('Target queue name empty or not defined.');
         }
 
         $this->createQueue($targetQueueName);
@@ -633,12 +633,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
-
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);

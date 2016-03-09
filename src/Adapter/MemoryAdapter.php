@@ -49,14 +49,14 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (empty($message)) {
-            throw new InvalidArgumentException('Parameter message empty or not defined.');
+            throw new InvalidArgumentException('Message empty or not defined.');
         }
         if (isset($this->queues[$queueName][$priority])) {
             $new_message = [
@@ -81,14 +81,14 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     public function deleteMessage($queueName, $message)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (empty($message)) {
-            throw new InvalidArgumentException('Parameter message empty or not defined.');
+            throw new InvalidArgumentException('Message empty or not defined.');
         }
         if (!is_array($message)) {
-            throw new InvalidArgumentException('message must be an array.');
+            throw new InvalidArgumentException('Message must be an array.');
         }
         if (!isset($message['id'])) {
             throw new InvalidArgumentException('Message id not found in message.');
@@ -132,11 +132,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         if (isset($this->queues[$queueName][$priority])) {
@@ -180,11 +180,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new \Exception('Unknown priority: ' . $priority);
@@ -212,11 +212,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new \Exception('Unknown priority: ' . $priority);
@@ -238,11 +238,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     public function deleteQueue($queueName, $nb_try = 0)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         unset($this->queues[$queueName]);
@@ -256,14 +256,14 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     public function createQueue($queueName)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (isset($this->queues[$queueName])) {
-            throw new \Exception('Queue with name ' . $queueName . ' already exist.');
+            throw new \Exception('A queue named ' . $queueName . ' already exist.');
         }
         if (strpos($queueName, ' ') !== false) {
-            throw new \Exception('QueueName must not contain any space.');
+            throw new \Exception('Queue name must not contain white spaces.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -280,18 +280,18 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
         if (empty($sourceQueueName)) {
-            throw new InvalidArgumentException('Parameter sourceQueueName empty or not defined.');
+            throw new InvalidArgumentException('Source queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$sourceQueueName])) {
-            throw new InvalidArgumentException('Queue ' . $sourceQueueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $sourceQueueName . " doesn't exist, please create it before using it.");
         }
         if (empty($targetQueueName)) {
-            throw new InvalidArgumentException('Parameter targetQueueName empty or not defined.');
+            throw new InvalidArgumentException('Target queue name empty or not defined.');
         }
 
         if (isset($this->queues[$targetQueueName])) {
-            throw new InvalidArgumentException('Queue ' . $targetQueueName . ' already exist.');
+            throw new InvalidArgumentException("Queue " . $targetQueueName . ' already exist.');
         }
 
         $this->createQueue($targetQueueName);
@@ -316,11 +316,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Parameter queueName empty or not defined.');
+            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException('Queue ' . $queueName . " doesn't exist, please create it before use it.");
+            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new \Exception('Unknown priority: ' . $priority);

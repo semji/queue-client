@@ -20,7 +20,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     public function add($name)
     {
         if (in_array($name, $this->priorities)) {
-            throw new \InvalidArgumentException('Level ' . $name . ' already exist.');
+            throw new \InvalidArgumentException('Level ' . $name . ' already exists.');
         }
         $this->priorities[] = $name;
         return $this;
@@ -33,7 +33,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     {
         $key = array_search($name, $this->priorities);
         if (false === $key) {
-            throw new \InvalidArgumentException('Level ' . $name . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $name . " doesn't exist.");
         }
         $default = $this->getDefault();
         unset($this->priorities[$key]);
@@ -54,7 +54,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($beforeName, $this->priorities);
         if (false !== $key) {
             if (in_array($addName, $this->priorities)) {
-                throw new \InvalidArgumentException('Level ' . $addName . ' already exist.');
+                throw new \InvalidArgumentException('Level ' . $addName . ' already exists.');
             }
             $default = $this->getDefault();
             if (0 === $key) {
@@ -67,7 +67,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
             }
             $this->setDefault($default);
         } else {
-            throw new \InvalidArgumentException('Level ' . $beforeName . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $beforeName . " doesn't exist.");
         }
         return $this;
     }
@@ -91,7 +91,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
                 }
             }
         } else {
-            throw new \InvalidArgumentException('Level ' . $beforeName . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $beforeName . " doesn't exist.");
         }
         return $this;
     }
@@ -104,7 +104,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($afterName, $this->priorities);
         if (false !== $key) {
             if (in_array($addName, $this->priorities)) {
-                throw new \InvalidArgumentException('Level ' . $addName . ' already exist.');
+                throw new \InvalidArgumentException('Level ' . $addName . ' already exists.');
             }
             $default = $this->getDefault();
             if ($key === (count($this->priorities) - 1)) {
@@ -117,7 +117,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
             }
             $this->setDefault($default);
         } else {
-            throw new \InvalidArgumentException('Level ' . $afterName . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $afterName . " doesn't exist.");
         }
         return $this;
     }
@@ -141,7 +141,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
                 }
             }
         } else {
-            throw new \InvalidArgumentException('Level ' . $afterName . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $afterName . " doesn't exist.");
         }
         return $this;
     }
@@ -203,7 +203,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         if (false !== $key) {
             $this->defaultIndex = $key;
         } else {
-            throw new \InvalidArgumentException('Level ' . $newDefault . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $newDefault . " doesn't exist.");
         }
 
         return $this;
@@ -239,7 +239,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($beforeName, $this->priorities);
 
         if (false === $key) {
-            throw new \InvalidArgumentException('Level ' . $beforeName . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $beforeName . " doesn't exist.");
         }
 
         if (0 === $key) {
@@ -257,7 +257,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($afterName, $this->priorities);
 
         if (false === $key) {
-            throw new \InvalidArgumentException('Level ' . $afterName . ' doesn\'t exist.');
+            throw new \InvalidArgumentException("Level " . $afterName . " doesn't exist.");
         }
 
         if (count($this->priorities) - 1 === $key) {
