@@ -3,6 +3,7 @@
 namespace ReputationVIP\QueueClient\Adapter;
 
 use InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\IOException;
 use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
@@ -70,7 +71,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             try {
                 $this->fs->mkdir($repository);
             } catch (IOExceptionInterface $e) {
-                throw new InvalidArgumentException('An error occurred while creating your directory at ' . $e->getPath());
+                throw new IOException('An error occurred while creating your directory at ' . $e->getPath());
             }
         }
 

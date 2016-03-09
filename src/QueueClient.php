@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use ReputationVIP\QueueClient\Adapter\AdapterInterface;
 use ReputationVIP\QueueClient\Adapter\NullAdapter;
 use ReputationVIP\QueueClient\Exception\ErrorException;
+use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\Exception\NoticeException;
 use ReputationVIP\QueueClient\Exception\WarningException;
 
@@ -83,7 +84,7 @@ class QueueClient implements QueueClientInterface
     {
         $queues = $this->resolveAliasQueueName($queueName);
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
+            throw new LogicException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->getMessages($queues, $nbMsg, $priority);
         }
@@ -96,7 +97,7 @@ class QueueClient implements QueueClientInterface
     {
         $queues = $this->resolveAliasQueueName($queueName);
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
+            throw new LogicException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             $this->adapter->deleteMessage($queues, $message);
         }
@@ -124,7 +125,7 @@ class QueueClient implements QueueClientInterface
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
+            throw new LogicException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->isEmpty($queues, $priority);
         }
@@ -138,7 +139,7 @@ class QueueClient implements QueueClientInterface
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
+            throw new LogicException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->getNumberMessages($queues, $priority);
         }
@@ -199,7 +200,7 @@ class QueueClient implements QueueClientInterface
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
+            throw new LogicException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             $this->adapter->purgeQueue($queues, $priority);
         }
