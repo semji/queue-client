@@ -3,6 +3,7 @@
 namespace ReputationVIP\QueueClient\Adapter;
 
 use InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
@@ -248,7 +249,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (empty($message)) {
             throw new InvalidArgumentException('Message empty or not defined.');
@@ -354,7 +355,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Number of messages is not valid.');
         }
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         return $this->getMessagesLock($queueName, $nbMsg, $priority);
     }
@@ -433,7 +434,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Message priority not found in message.');
         }
         if (!$this->fs->exists($this->getQueuePath($queueName, $message['priority']))) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $this->deleteMessageLock($queueName, $message, $message['priority']);
@@ -460,7 +461,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);
@@ -492,7 +493,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);
@@ -520,7 +521,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function deleteQueueLock($queueName, $priority, $nbTries = 0)
     {
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queueFilePath = $this->getQueuePath($queueName, $priority);
@@ -637,7 +638,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);

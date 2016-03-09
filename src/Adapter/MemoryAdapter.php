@@ -3,6 +3,7 @@
 namespace ReputationVIP\QueueClient\Adapter;
 
 use InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use SplQueue;
@@ -53,7 +54,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (empty($message)) {
             throw new InvalidArgumentException('Message empty or not defined.');
@@ -136,7 +137,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         if (isset($this->queues[$queueName][$priority])) {
@@ -184,7 +185,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new \Exception('Unknown priority: ' . $priority);
@@ -216,7 +217,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new \Exception('Unknown priority: ' . $priority);
@@ -242,7 +243,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         unset($this->queues[$queueName]);
@@ -284,14 +285,14 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$sourceQueueName])) {
-            throw new InvalidArgumentException("Queue " . $sourceQueueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $sourceQueueName . " doesn't exist, please create it before using it.");
         }
         if (empty($targetQueueName)) {
             throw new InvalidArgumentException('Target queue name empty or not defined.');
         }
 
         if (isset($this->queues[$targetQueueName])) {
-            throw new InvalidArgumentException("Queue " . $targetQueueName . ' already exist.');
+            throw new LogicException("Queue " . $targetQueueName . ' already exist.');
         }
 
         $this->createQueue($targetQueueName);
@@ -320,7 +321,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new InvalidArgumentException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new \Exception('Unknown priority: ' . $priority);
