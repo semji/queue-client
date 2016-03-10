@@ -2,9 +2,10 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
-use InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\Exception\IOException;
 use ReputationVIP\QueueClient\Exception\LogicException;
+use ReputationVIP\QueueClient\Exception\UnexpectedValueException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
@@ -43,6 +44,9 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param Filesystem $fs
      * @param Finder $finder
      * @param LockHandlerFactoryInterface $lockHandlerFactory
+     *
+     * @throws InvalidArgumentException
+     * @throws IOException
      */
     public function __construct($repository, PriorityHandlerInterface $priorityHandler = null, Filesystem $fs = null, Finder $finder = null, LockHandlerFactoryInterface $lockHandlerFactory = null)
     {
@@ -117,6 +121,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return array
      *
+     * @throws IOException
+     * @throws UnexpectedValueException
      * @throws \Exception
      */
     private function readQueueFromFile($queueName, $priority, $nbTries = 0)
@@ -125,7 +131,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new \Exception('Lock timeout for file ' . $queueFilePath);
+                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
 
@@ -140,7 +146,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new \Exception('Fail to get content from file ' . $queueFilePath);
+                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
         } catch (\Exception $e) {
@@ -159,6 +165,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param int $nbTries
      *
      * @return AdapterInterface
+     *
+     * @throws IOException
      * @throws \Exception
      */
     private function writeQueueInFile($queueName, $priority, $queue, $nbTries = 0)
@@ -167,7 +175,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new \Exception('Lock timeout for file ' . $queueFilePath);
+                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(100);
             return $this->writeQueueInFile($queueName, $priority, $queue, ($nbTries + 1));
@@ -191,6 +199,9 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param int $delaySeconds
      *
      * @return AdapterInterface
+     *
+     * @throws IOException
+     * @throws UnexpectedValueException
      * @throws \Exception
      */
     private function addMessageLock($queueName, $message, $priority, $nbTries = 0, $delaySeconds = 0)
@@ -199,7 +210,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new \Exception('Lock timeout for file ' . $queueFilePath);
+                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
 
@@ -214,11 +225,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new \Exception('Fail to get content from file ' . $queueFilePath);
+                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
             if (!(isset($queue['queue']))) {
-                throw new \Exception('Queue content bad format.');
+                throw new UnexpectedValueException('Queue content bad format.');
             }
             $new_message = [
                 'id' => uniqid($queueName . $priority, true),
@@ -269,6 +280,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return array
      *
+     * @throws IOException
+     * @throws UnexpectedValueException
      * @throws \Exception
      */
     private function getMessagesLock($queueName, $nbMsg, $priority, $nbTries = 0)
@@ -277,7 +290,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new \Exception('Lock timeout for file ' . $queueFilePath);
+                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
 
@@ -293,11 +306,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new \Exception('Fail to get content from file ' . $queueFilePath);
+                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
             if (!isset($queue['queue'])) {
-                throw new \Exception('Queue content bad format.');
+                throw new UnexpectedValueException('Queue content bad format.');
             }
             foreach ($queue['queue'] as $key => $message) {
                 $timeDiff = time() - $message['time-in-flight'];
@@ -368,6 +381,9 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param int $nbTries
      *
      * @return AdapterInterface
+     *
+     * @throws IOException
+     * @throws UnexpectedValueException
      * @throws \Exception
      */
     private function deleteMessageLock($queueName, $message, $priority, $nbTries = 0)
@@ -376,7 +392,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new \Exception('Lock timeout for file ' . $queueFilePath);
+                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
             return $this->deleteMessageLock($queueName, $message, $priority, ($nbTries + 1));
@@ -390,11 +406,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new \Exception('Fail to get content from file ' . $queueFilePath);
+                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
             if (!isset($queue['queue'])) {
-                throw new \Exception('Queue content bad format.');
+                throw new UnexpectedValueException('Queue content bad format.');
             }
             foreach ($queue['queue'] as $key => $messageIterator) {
                 if ($messageIterator['id'] === $message['id']) {
@@ -467,7 +483,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
         $queue = $this->readQueueFromFile($queueName, $priority);
         if (!(isset($queue['queue']))) {
-            throw new \Exception('Queue content bad format.');
+            throw new UnexpectedValueException('Queue content bad format.');
         }
 
         return count($queue['queue']) > 0 ? false : true;
@@ -499,7 +515,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
         $queue = $this->readQueueFromFile($queueName, $priority);
         if (!(isset($queue['queue']))) {
-            throw new \Exception('Queue content bad format.');
+            throw new UnexpectedValueException('Queue content bad format.');
         }
         foreach ($queue['queue'] as $key => $message) {
             $timeDiff = time() - $message['time-in-flight'];
@@ -517,7 +533,9 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param int $nbTries
      *
      * @return AdapterInterface
-     * @throws \Exception
+     *
+     * @throws LogicException
+     * @throws IOException
      */
     private function deleteQueueLock($queueName, $priority, $nbTries = 0)
     {
@@ -529,7 +547,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new \Exception('Lock timeout for file ' . $queueFilePath);
+                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
             return $this->deleteQueueLock($queueName, $priority, ($nbTries + 1));
@@ -560,15 +578,16 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param string $queueName
      * @param string $priority
      *
-     * @throws \Exception
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     private function createQueueLock($queueName, $priority)
     {
         if ($this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new \Exception('A queue named ' . $queueName . ' already exist.');
+            throw new LogicException('A queue named ' . $queueName . ' already exist.');
         }
         if (strpos($queueName, ' ') !== false) {
-            throw new \Exception('Queue name must not contain white spaces.');
+            throw new InvalidArgumentException('Queue name must not contain white spaces.');
         }
 
         $queue = [
@@ -644,7 +663,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
         $queue = $this->readQueueFromFile($queueName, $priority);
         if (!isset($queue['queue'])) {
-            throw new \Exception('Queue content bad format.');
+            throw new UnexpectedValueException('Queue content bad format.');
         }
         $queue['queue'] = [];
         $this->writeQueueInFile($queueName, $priority, $queue);
