@@ -2,8 +2,8 @@
 
 namespace ReputationVIP\QueueClient\PriorityHandler;
 
-use ReputationVIP\QueueClient\Common\Exception\LogicException;
 use ReputationVIP\QueueClient\Common\Exception\RangeException;
+use ReputationVIP\QueueClient\PriorityHandler\Exception\LevelException;
 
 class StandardPriorityHandler implements PriorityHandlerInterface
 {
@@ -23,7 +23,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     public function add($name)
     {
         if (in_array($name, $this->priorities)) {
-            throw new LogicException('Level ' . $name . ' already exists.');
+            throw new LevelException('Level ' . $name . ' already exists.');
         }
         $this->priorities[] = $name;
         return $this;
@@ -36,7 +36,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     {
         $key = array_search($name, $this->priorities);
         if (false === $key) {
-            throw new LogicException("Level " . $name . " doesn't exist.");
+            throw new LevelException("Level " . $name . " doesn't exist.");
         }
         $default = $this->getDefault();
         unset($this->priorities[$key]);
@@ -57,7 +57,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($beforeName, $this->priorities);
         if (false !== $key) {
             if (in_array($addName, $this->priorities)) {
-                throw new LogicException('Level ' . $addName . ' already exists.');
+                throw new LevelException('Level ' . $addName . ' already exists.');
             }
             $default = $this->getDefault();
             if (0 === $key) {
@@ -70,7 +70,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
             }
             $this->setDefault($default);
         } else {
-            throw new LogicException("Level " . $beforeName . " doesn't exist.");
+            throw new LevelException("Level " . $beforeName . " doesn't exist.");
         }
         return $this;
     }
@@ -94,7 +94,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
                 }
             }
         } else {
-            throw new LogicException("Level " . $beforeName . " doesn't exist.");
+            throw new LevelException("Level " . $beforeName . " doesn't exist.");
         }
         return $this;
     }
@@ -107,7 +107,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($afterName, $this->priorities);
         if (false !== $key) {
             if (in_array($addName, $this->priorities)) {
-                throw new LogicException('Level ' . $addName . ' already exists.');
+                throw new LevelException('Level ' . $addName . ' already exists.');
             }
             $default = $this->getDefault();
             if ($key === (count($this->priorities) - 1)) {
@@ -120,7 +120,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
             }
             $this->setDefault($default);
         } else {
-            throw new LogicException("Level " . $afterName . " doesn't exist.");
+            throw new LevelException("Level " . $afterName . " doesn't exist.");
         }
         return $this;
     }
@@ -144,7 +144,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
                 }
             }
         } else {
-            throw new LogicException("Level " . $afterName . " doesn't exist.");
+            throw new LevelException("Level " . $afterName . " doesn't exist.");
         }
         return $this;
     }
@@ -206,7 +206,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         if (false !== $key) {
             $this->defaultIndex = $key;
         } else {
-            throw new LogicException("Level " . $newDefault . " doesn't exist.");
+            throw new LevelException("Level " . $newDefault . " doesn't exist.");
         }
 
         return $this;
@@ -242,7 +242,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($beforeName, $this->priorities);
 
         if (false === $key) {
-            throw new LogicException("Level " . $beforeName . " doesn't exist.");
+            throw new LevelException("Level " . $beforeName . " doesn't exist.");
         }
 
         if (0 === $key) {
@@ -260,7 +260,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         $key = array_search($afterName, $this->priorities);
 
         if (false === $key) {
-            throw new LogicException("Level " . $afterName . " doesn't exist.");
+            throw new LevelException("Level " . $afterName . " doesn't exist.");
         }
 
         if (count($this->priorities) - 1 === $key) {
