@@ -44,6 +44,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws InvalidMessageException
+     * @throws LogicException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
@@ -82,6 +86,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws InvalidMessageException
+     * @throws DomainException
      */
     public function deleteMessage($queueName, $message)
     {
@@ -121,6 +129,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws DomainException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
@@ -176,6 +188,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws DomainException
      */
     public function isEmpty($queueName, $priority = null)
     {
@@ -206,6 +222,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws DomainException
      */
     public function getNumberMessages($queueName, $priority = null)
     {
@@ -243,6 +263,9 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function deleteQueue($queueName, $nb_try = 0)
     {
@@ -261,6 +284,9 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function createQueue($queueName)
     {
@@ -286,6 +312,9 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
@@ -314,6 +343,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws DomainException
      */
     public function purgeQueue($queueName, $priority = null)
     {

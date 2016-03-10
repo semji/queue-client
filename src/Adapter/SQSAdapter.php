@@ -27,6 +27,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @param string $queueName
      * @param string $priority
+     *
      * @return string
      */
     private function getQueueNameWithPrioritySuffix($queueName, $priority) {
@@ -56,6 +57,10 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws InvalidMessageException
+     * @throws QueueAccessException
      */
     public function addMessages($queueName, $messages, $priority = null)
     {
@@ -106,6 +111,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws InvalidArgumentException
      * @throws QueueAccessException
      */
@@ -197,6 +203,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
+     * @throws InvalidMessageException
      * @throws QueueAccessException
      */
     public function deleteMessage($queueName, $message)

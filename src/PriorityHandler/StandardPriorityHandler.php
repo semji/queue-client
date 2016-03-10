@@ -19,6 +19,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function add($name)
     {
@@ -31,6 +33,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function remove($name)
     {
@@ -51,6 +55,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function addBefore($addName, $beforeName)
     {
@@ -77,6 +83,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function removeBefore($beforeName)
     {
@@ -101,6 +109,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function addAfter($addName, $afterName)
     {
@@ -127,6 +137,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function removeAfter($afterName)
     {
@@ -174,6 +186,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws RangeException
      */
     public function getName($index)
     {
@@ -196,6 +210,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function setDefault($newDefault)
     {
@@ -236,6 +252,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function getBefore($beforeName)
     {
@@ -254,6 +272,8 @@ class StandardPriorityHandler implements PriorityHandlerInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LevelException
      */
     public function getAfter($afterName)
     {

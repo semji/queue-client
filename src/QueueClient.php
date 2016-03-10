@@ -2,10 +2,10 @@
 
 namespace ReputationVIP\QueueClient;
 
-use InvalidArgumentException;
 use ReputationVIP\QueueClient\Adapter\AdapterInterface;
 use ReputationVIP\QueueClient\Adapter\NullAdapter;
 use ReputationVIP\QueueClient\Exception\DomainException;
+use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\Exception\LogicException;
 
 class QueueClient implements QueueClientInterface
@@ -77,6 +77,8 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LogicException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
@@ -90,6 +92,8 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LogicException
      */
     public function deleteMessage($queueName, $message)
     {
@@ -117,6 +121,8 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LogicException
      */
     public function isEmpty($queueName, $priority = null)
     {
@@ -131,6 +137,8 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LogicException
      */
     public function getNumberMessages($queueName, $priority = null)
     {
@@ -192,6 +200,8 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws LogicException
      */
     public function purgeQueue($queueName, $priority = null)
     {
@@ -226,6 +236,9 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws DomainException
      */
     public function addAlias($queueName, $alias)
     {
@@ -255,6 +268,8 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws DomainException
      */
     public function removeAlias($alias)
     {

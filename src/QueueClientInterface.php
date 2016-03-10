@@ -11,7 +11,6 @@ interface QueueClientInterface
      * @param mixed  $message
      * @param string $priority
      * @param int $delaySeconds
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -21,7 +20,6 @@ interface QueueClientInterface
      * @param string $queueName
      * @param array  $messages
      * @param string $priority
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -30,17 +28,15 @@ interface QueueClientInterface
     /**
      * @param string $queueName
      * @param string $priority
-     * @param int    $nbMsg
+     * @param int $nbMsg
      *
      * @return array
-     * @throw InvalidArgumentException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null);
 
     /**
      * @param string $queueName
      * @param array  $message
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -49,7 +45,6 @@ interface QueueClientInterface
     /**
      * @param string $queueName
      * @param array  $messages
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -60,7 +55,6 @@ interface QueueClientInterface
      * @param string $priority
      *
      * @return bool
-     * @throw InvalidArgumentException
      */
     public function isEmpty($queueName, $priority = null);
 
@@ -69,13 +63,11 @@ interface QueueClientInterface
      * @param string $priority
      *
      * @return int
-     * @throw InvalidArgumentException
      */
     public function getNumberMessages($queueName, $priority = null);
 
     /**
      * @param string $queueName
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -83,7 +75,6 @@ interface QueueClientInterface
 
     /**
      * @param string $queueName
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -92,7 +83,6 @@ interface QueueClientInterface
     /**
      * @param string $sourceQueueName
      * @param string $targetQueueName
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -101,7 +91,6 @@ interface QueueClientInterface
     /**
      * @param string $queueName
      * @param string $priority
-     * @throw InvalidArgumentException
      *
      * @return QueueClientInterface
      */
@@ -111,7 +100,6 @@ interface QueueClientInterface
      * @param string $regex
      *
      * @return array
-     * @throw InvalidArgumentException
      */
     public function listQueues($regex = null);
 
@@ -120,7 +108,6 @@ interface QueueClientInterface
      * @param string $alias
      *
      * @return QueueClientInterface
-     * @throw InvalidArgumentException
      */
     public function addAlias($queueName, $alias);
 
@@ -128,7 +115,6 @@ interface QueueClientInterface
      * @param string $alias
      *
      * @return QueueClientInterface
-     * @throw InvalidArgumentException
      */
     public function removeAlias($alias);
 

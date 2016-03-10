@@ -47,6 +47,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param LockHandlerFactoryInterface $lockHandlerFactory
      *
      * @throws InvalidArgumentException
+     * @throws QueueAccessException
      */
     public function __construct($repository, PriorityHandlerInterface $priorityHandler = null, Filesystem $fs = null, Finder $finder = null, LockHandlerFactoryInterface $lockHandlerFactory = null)
     {
@@ -121,6 +122,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return array
      *
+     * @throws QueueAccessException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -165,6 +167,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return AdapterInterface
      *
+     * @throws QueueAccessException
      * @throws \Exception
      */
     private function writeQueueInFile($queueName, $priority, $queue, $nbTries = 0)
@@ -198,6 +201,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return AdapterInterface
      *
+     * @throws QueueAccessException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -247,6 +251,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws InvalidMessageException
+     * @throws LogicException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
@@ -279,6 +287,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return array
      *
+     * @throws QueueAccessException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -339,6 +348,9 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
@@ -382,6 +394,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return AdapterInterface
      *
+     * @throws QueueAccessException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -430,6 +443,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws InvalidMessageException
+     * @throws LogicException
      */
     public function deleteMessage($queueName, $message)
     {
@@ -464,6 +481,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws UnexpectedValueException
      */
     public function isEmpty($queueName, $priority = null)
     {
@@ -494,6 +515,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws UnexpectedValueException
      */
     public function getNumberMessages($queueName, $priority = null)
     {
@@ -538,6 +563,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @return AdapterInterface
      *
      * @throws LogicException
+     * @throws QueueAccessException
      */
     private function deleteQueueLock($queueName, $priority, $nbTries = 0)
     {
@@ -561,6 +587,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
      */
     public function deleteQueue($queueName)
     {
@@ -580,8 +608,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param string $queueName
      * @param string $priority
      *
-     * @throws LogicException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     private function createQueueLock($queueName, $priority)
     {
@@ -601,6 +629,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
      */
     public function createQueue($queueName)
     {
@@ -618,6 +648,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
      */
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
@@ -644,6 +676,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws InvalidArgumentException
+     * @throws LogicException
+     * @throws UnexpectedValueException
      */
     public function purgeQueue($queueName, $priority = null)
     {
