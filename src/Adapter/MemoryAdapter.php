@@ -2,6 +2,7 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
+use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Common\Exception\DomainException;
 use ReputationVIP\QueueClient\Common\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\Common\Exception\LogicException;
@@ -46,20 +47,22 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
-        if (null === $priority) {
-            $priority = $this->priorityHandler->getDefault();
-        }
-
         if (empty($queueName)) {
             throw new InvalidArgumentException('Queue name empty or not defined.');
+        }
+
+        if (empty($message)) {
+            throw new InvalidMessageException('Message empty or not defined.');
+        }
+
+        if (null === $priority) {
+            $priority = $this->priorityHandler->getDefault();
         }
 
         if (!isset($this->queues[$queueName])) {
             throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
-        if (empty($message)) {
-            throw new InvalidArgumentException('Message empty or not defined.');
-        }
+
         if (isset($this->queues[$queueName][$priority])) {
             $new_message = [
                 'id' => uniqid($queueName . $priority, true),
@@ -87,16 +90,19 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($message)) {
-            throw new InvalidArgumentException('Message empty or not defined.');
+            throw new InvalidMessageException('Message empty or not defined.');
         }
+
         if (!is_array($message)) {
-            throw new InvalidArgumentException('Message must be an array.');
+            throw new InvalidMessageException('Message must be an array.');
         }
+
         if (!isset($message['id'])) {
-            throw new InvalidArgumentException('Message id not found in message.');
+            throw new InvalidMessageException('Message id not found in message.');
         }
+
         if (!isset($message['priority'])) {
-            throw new InvalidArgumentException('Message priority not found in message.');
+            throw new InvalidMessageException('Message priority not found in message.');
         }
 
         if (isset($this->queues[$queueName][$message['priority']])) {
@@ -119,6 +125,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
         $messages = [];
+
+        if (empty($queueName)) {
+            throw new InvalidArgumentException('Queue name empty or not defined.');
+        }
+
         if (null === $priority) {
             $priorities = $this->priorityHandler->getAll();
             $messages = [];
@@ -131,10 +142,6 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             return $messages;
-        }
-
-        if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
@@ -172,6 +179,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function isEmpty($queueName, $priority = null)
     {
+        if (empty($queueName)) {
+            throw new InvalidArgumentException('Queue name empty or not defined.');
+        }
+
         if (null === $priority) {
             $priorities = $this->priorityHandler->getAll();
             foreach ($priorities as $priority)
@@ -179,10 +190,6 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                     return false;
                 }
             return true;
-        }
-
-        if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
@@ -204,6 +211,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     {
         $nbrMsg = 0;
 
+        if (empty($queueName)) {
+            throw new InvalidArgumentException('Queue name empty or not defined.');
+        }
+
         if (null === $priority) {
             $priorities = $this->priorityHandler->getAll();
             foreach ($priorities as $priority) {
@@ -211,10 +222,6 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             }
 
             return $nbrMsg;
-        }
-
-        if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
@@ -261,11 +268,12 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
-        if (isset($this->queues[$queueName])) {
-            throw new LogicException('A queue named ' . $queueName . ' already exist.');
-        }
         if (strpos($queueName, ' ') !== false) {
             throw new InvalidArgumentException('Queue name must not contain white spaces.');
+        }
+
+        if (isset($this->queues[$queueName])) {
+            throw new LogicException('A queue named ' . $queueName . ' already exist.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -285,11 +293,12 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Source queue name empty or not defined.');
         }
 
-        if (!isset($this->queues[$sourceQueueName])) {
-            throw new LogicException("Queue " . $sourceQueueName . " doesn't exist, please create it before using it.");
-        }
         if (empty($targetQueueName)) {
             throw new InvalidArgumentException('Target queue name empty or not defined.');
+        }
+
+        if (!isset($this->queues[$sourceQueueName])) {
+            throw new LogicException("Queue " . $sourceQueueName . " doesn't exist, please create it before using it.");
         }
 
         if (isset($this->queues[$targetQueueName])) {
@@ -308,6 +317,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      */
     public function purgeQueue($queueName, $priority = null)
     {
+        if (empty($queueName)) {
+            throw new InvalidArgumentException('Queue name empty or not defined.');
+        }
+
         if (null === $priority) {
             $priorities = $this->priorityHandler->getAll();
             foreach ($priorities as $priority) {
@@ -315,10 +328,6 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             }
 
             return $this;
-        }
-
-        if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {

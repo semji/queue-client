@@ -238,6 +238,7 @@ class QueueClient implements QueueClientInterface
         if (empty($alias)) {
             throw new InvalidArgumentException('Alias is empty.');
         }
+
         if (!in_array($queueName, $listQueues)) {
             throw new DomainException('Attempting to create alias on unknown queue.');
         }
