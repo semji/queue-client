@@ -2,7 +2,7 @@
 
 namespace ReputationVIP\QueueClient\Exception;
 
-class ErrorException extends \ErrorException
+class ErrorException extends \ErrorException implements QueueClientException
 {
     /**
      * ErrorException constructor.

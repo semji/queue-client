@@ -2,6 +2,6 @@
 
 namespace ReputationVIP\QueueClient\Exception;
 
-class DomainException extends \DomainException
+class DomainException extends \DomainException implements QueueClientException
 {
 }

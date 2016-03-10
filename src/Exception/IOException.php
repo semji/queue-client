@@ -2,6 +2,6 @@
 
 namespace ReputationVIP\QueueClient\Exception;
 
-class IOException extends \Exception
+class IOException extends \Exception implements QueueClientException
 {
 }
