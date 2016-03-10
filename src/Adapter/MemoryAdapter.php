@@ -3,7 +3,7 @@
 namespace ReputationVIP\QueueClient\Adapter;
 
 use ReputationVIP\QueueClient\Exception\DomainException;
-use ReputationVIP\QueueClient\Exception\InvalidArgumentException
+use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
@@ -71,7 +71,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             $splQueue = $this->queues[$queueName][$priority];
             $splQueue->enqueue($new_message);
         } else {
-            throw new DomainException('Priority ' . $priority . ' unknown.');
+            throw new DomainException('Unknown priority: ' . $priority);
         }
 
         return $this;
@@ -107,7 +107,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
         } else {
-            throw new DomainException('priority ' . $message['priority'] . ' unknown.');
+            throw new DomainException('Unknown priority: ' . $message['priority']);
         }
 
         return $this;
