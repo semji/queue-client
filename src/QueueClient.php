@@ -5,11 +5,8 @@ namespace ReputationVIP\QueueClient;
 use InvalidArgumentException;
 use ReputationVIP\QueueClient\Adapter\AdapterInterface;
 use ReputationVIP\QueueClient\Adapter\NullAdapter;
-use ReputationVIP\QueueClient\Exception\DomainException;
-use ReputationVIP\QueueClient\Exception\ErrorException;
-use ReputationVIP\QueueClient\Exception\LogicException;
-use ReputationVIP\QueueClient\Exception\NoticeException;
-use ReputationVIP\QueueClient\Exception\WarningException;
+use ReputationVIP\QueueClient\Common\Exception\DomainException;
+use ReputationVIP\QueueClient\Common\Exception\LogicException;
 
 class QueueClient implements QueueClientInterface
 {

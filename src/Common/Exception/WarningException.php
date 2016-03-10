@@ -1,6 +1,6 @@
 <?php
 
-namespace ReputationVIP\QueueClient\Exception;
+namespace ReputationVIP\QueueClient\Common\Exception;
 
 class WarningException extends \ErrorException implements QueueClientException
 {

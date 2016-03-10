@@ -2,9 +2,8 @@
 
 namespace ReputationVIP\QueueClient\PriorityHandler;
 
-use ReputationVIP\QueueClient\Exception\DomainException;
-use ReputationVIP\QueueClient\Exception\LogicException;
-use ReputationVIP\QueueClient\Exception\RangeException;
+use ReputationVIP\QueueClient\Common\Exception\LogicException;
+use ReputationVIP\QueueClient\Common\Exception\RangeException;
 
 class StandardPriorityHandler implements PriorityHandlerInterface
 {
