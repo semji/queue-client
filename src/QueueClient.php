@@ -5,6 +5,7 @@ namespace ReputationVIP\QueueClient;
 use InvalidArgumentException;
 use ReputationVIP\QueueClient\Adapter\AdapterInterface;
 use ReputationVIP\QueueClient\Adapter\NullAdapter;
+use ReputationVIP\QueueClient\Exception\DomainException;
 use ReputationVIP\QueueClient\Exception\ErrorException;
 use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\Exception\NoticeException;
@@ -241,7 +242,7 @@ class QueueClient implements QueueClientInterface
             throw new InvalidArgumentException('Alias is empty.');
         }
         if (!in_array($queueName, $listQueues)) {
-            throw new NoticeException('Alias created on unknown queue.');
+            throw new DomainException('Attempting to create alias on unknown queue.');
         }
 
         if (empty($this->aliases[$alias])) {
@@ -266,7 +267,7 @@ class QueueClient implements QueueClientInterface
                 unset($this->aliases[$alias]);
             }
         } else {
-            throw new WarningException('No alias found.');
+            throw new DomainException('No alias found.');
         }
         return $this;
     }
