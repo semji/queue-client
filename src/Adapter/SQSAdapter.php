@@ -6,7 +6,7 @@ use Aws\Sqs\Exception\SqsException;
 use Aws\Sqs\SqsClient;
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
-use ReputationVIP\QueueClient\Common\Exception\InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace ReputationVIP\QueueClient\Common\Exception;
+namespace ReputationVIP\QueueClient\Exception;
 
 class DomainException extends \DomainException implements QueueClientException
 {

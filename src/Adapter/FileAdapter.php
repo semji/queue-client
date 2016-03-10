@@ -4,9 +4,9 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
-use ReputationVIP\QueueClient\Common\Exception\InvalidArgumentException;
-use ReputationVIP\QueueClient\Common\Exception\LogicException;
-use ReputationVIP\QueueClient\Common\Exception\UnexpectedValueException;
+use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\LogicException;
+use ReputationVIP\QueueClient\Exception\UnexpectedValueException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
