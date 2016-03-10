@@ -5,7 +5,6 @@ namespace ReputationVIP\QueueClient\Adapter;
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Common\Exception\InvalidArgumentException;
-use ReputationVIP\QueueClient\Exception\IOException;
 use ReputationVIP\QueueClient\Common\Exception\LogicException;
 use ReputationVIP\QueueClient\Common\Exception\UnexpectedValueException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
@@ -48,7 +47,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param LockHandlerFactoryInterface $lockHandlerFactory
      *
      * @throws InvalidArgumentException
-     * @throws IOException
      */
     public function __construct($repository, PriorityHandlerInterface $priorityHandler = null, Filesystem $fs = null, Finder $finder = null, LockHandlerFactoryInterface $lockHandlerFactory = null)
     {
@@ -123,7 +121,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return array
      *
-     * @throws IOException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -168,7 +165,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return AdapterInterface
      *
-     * @throws IOException
      * @throws \Exception
      */
     private function writeQueueInFile($queueName, $priority, $queue, $nbTries = 0)
@@ -202,7 +198,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return AdapterInterface
      *
-     * @throws IOException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -284,7 +279,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return array
      *
-     * @throws IOException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -388,7 +382,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @return AdapterInterface
      *
-     * @throws IOException
      * @throws UnexpectedValueException
      * @throws \Exception
      */
@@ -545,7 +538,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @return AdapterInterface
      *
      * @throws LogicException
-     * @throws IOException
      */
     private function deleteQueueLock($queueName, $priority, $nbTries = 0)
     {
