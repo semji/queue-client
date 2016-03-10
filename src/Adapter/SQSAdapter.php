@@ -95,7 +95,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                     'Entries' => $messages,
                 ]);
             } catch (SqsException $e) {
-                throw new QueueAccessException($e->getMessage());
+                throw new QueueAccessException('Cannot add messages in queue.', 0, $e);
             }
         }
 
@@ -131,7 +131,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                 'delaySeconds' => $delaySeconds,
             ]);
         } catch (SqsException $e) {
-            throw new QueueAccessException($e->getMessage());
+            throw new QueueAccessException('Cannot add message in queue.', 0, $e);
         }
 
         return $this;
@@ -178,7 +178,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             ]);
             $messages = $results->get('Messages');
         } catch (SqsException $e) {
-            throw new QueueAccessException($e->getMessage());
+            throw new QueueAccessException('Cannot get messages from queue.', 0, $e);
         }
 
         if (is_null($messages)) {
@@ -224,7 +224,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                 'ReceiptHandle' => $message['ReceiptHandle'],
             ]);
         } catch (SqsException $e) {
-            throw new QueueAccessException($e->getMessage());
+            throw new QueueAccessException('Cannot delete message from queue.', 0, $e);
         }
 
         return $this;
@@ -258,7 +258,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                 'AttributeNames' => ['ApproximateNumberOfMessages'],
             ]);
         } catch (SqsException $e) {
-            throw new QueueAccessException($e->getMessage());
+            throw new QueueAccessException('Unable to determine whether queue is empty.', 0, $e);
         }
 
         $result = $result->get('Attributes');
@@ -299,7 +299,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                 'AttributeNames' => ['ApproximateNumberOfMessages'],
             ]);
         } catch (SqsException $e) {
-            throw new QueueAccessException($e->getMessage());
+            throw new QueueAccessException('Unable to get number of messages.', 0, $e);
         }
 
         $result = $result->get('Attributes');
@@ -331,7 +331,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                     'QueueUrl' => $queueUrl,
                 ]);
             } catch (SqsException $e) {
-                throw new QueueAccessException($e->getMessage());
+                throw new QueueAccessException('Cannot delete queue.', 0, $e);
             }
         }
 
@@ -359,7 +359,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                     'Attributes' => [],
                 ]);
             } catch (SqsException $e) {
-                throw new QueueAccessException($e->getMessage());
+                throw new QueueAccessException('Cannot create queue', 0, $e);
             }
         }
 
@@ -427,7 +427,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                 'QueueUrl' => $queueUrl,
             ]);
         } catch (SqsException $e) {
-            throw new QueueAccessException($e->getMessage());
+            throw new QueueAccessException('Cannot purge queue', 0, $e);
         }
 
         return $this;
@@ -451,7 +451,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
                 ]);
             }
         } catch (SqsException $e) {
-            throw new QueueAccessException($e->getMessage());
+            throw new QueueAccessException('Cannot list queues', 0, $e);
         }
 
         $results = $results->get('QueueUrls');
