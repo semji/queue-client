@@ -2,6 +2,7 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
+use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Common\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\Exception\IOException;
 use ReputationVIP\QueueClient\Common\Exception\LogicException;
@@ -75,7 +76,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             try {
                 $this->fs->mkdir($repository);
             } catch (IOExceptionInterface $e) {
-                throw new IOException('An error occurred while creating your directory at ' . $e->getPath());
+                throw new QueueAccessException('An error occurred while creating your directory at ' . $e->getPath());
             }
         }
 
@@ -131,7 +132,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
+                throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
 
@@ -175,7 +176,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
+                throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(100);
             return $this->writeQueueInFile($queueName, $priority, $queue, ($nbTries + 1));
@@ -210,7 +211,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
+                throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
 
@@ -290,7 +291,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
+                throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
 
@@ -392,7 +393,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
+                throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
             return $this->deleteMessageLock($queueName, $message, $priority, ($nbTries + 1));
@@ -547,7 +548,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
         if (!$lockHandler->lock()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
-                throw new IOException('Reach max retry for locking queue file ' . $queueFilePath);
+                throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
             usleep(10);
             return $this->deleteQueueLock($queueName, $priority, ($nbTries + 1));

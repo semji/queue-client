@@ -4,6 +4,7 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use Aws\Sqs\Exception\SqsException;
 use Aws\Sqs\SqsClient;
+use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Common\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
@@ -87,11 +88,15 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         foreach ($batchMessages as $messages) {
-            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
-            $this->sqsClient->sendMessageBatch([
-                'QueueUrl' => $queueUrl,
-                'Entries' => $messages,
-            ]);
+            try {
+                $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+                $this->sqsClient->sendMessageBatch([
+                    'QueueUrl' => $queueUrl,
+                    'Entries' => $messages,
+                ]);
+            } catch (SqsException $e) {
+                throw new QueueAccessException($e->getMessage());
+            }
         }
 
         return $this;
@@ -101,7 +106,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
@@ -116,13 +121,18 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         if (empty($message)) {
             throw new InvalidArgumentException('Message empty or not defined.');
         }
+
         $message = serialize($message);
-        $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
-        $this->sqsClient->sendMessage([
-            'QueueUrl' => $queueUrl,
-            'MessageBody' => $message,
-            'delaySeconds' => $delaySeconds
-        ]);
+        try {
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+            $this->sqsClient->sendMessage([
+                'QueueUrl' => $queueUrl,
+                'MessageBody' => $message,
+                'delaySeconds' => $delaySeconds,
+            ]);
+        } catch (SqsException $e) {
+            throw new QueueAccessException($e->getMessage());
+        }
 
         return $this;
     }
@@ -131,7 +141,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
@@ -160,12 +170,16 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Number of messages not valid.');
         }
 
-        $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
-        $results = $this->sqsClient->receiveMessage([
-            'QueueUrl' => $queueUrl,
-            'MaxNumberOfMessages' => $nbMsg,
-        ]);
-        $messages = $results->get('Messages');
+        try {
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+            $results = $this->sqsClient->receiveMessage([
+                'QueueUrl' => $queueUrl,
+                'MaxNumberOfMessages' => $nbMsg,
+            ]);
+            $messages = $results->get('Messages');
+        } catch (SqsException $e) {
+            throw new QueueAccessException($e->getMessage());
+        }
 
         if (is_null($messages)) {
             return [];
@@ -182,7 +196,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function deleteMessage($queueName, $message)
     {
@@ -202,11 +216,16 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         if (!isset($message['priority'])) {
             throw new InvalidArgumentException('Priority not found in message.');
         }
-        $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $message['priority'])])->get('QueueUrl');
-        $this->sqsClient->deleteMessage([
-            'QueueUrl' => $queueUrl,
-            'ReceiptHandle' => $message['ReceiptHandle'],
-        ]);
+
+        try {
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $message['priority'])])->get('QueueUrl');
+            $this->sqsClient->deleteMessage([
+                'QueueUrl' => $queueUrl,
+                'ReceiptHandle' => $message['ReceiptHandle'],
+            ]);
+        } catch (SqsException $e) {
+            throw new QueueAccessException($e->getMessage());
+        }
 
         return $this;
     }
@@ -215,7 +234,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function isEmpty($queueName, $priority = null)
     {
@@ -232,11 +251,16 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
-        $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
-        $result = $this->sqsClient->getQueueAttributes([
-            'QueueUrl' => $queueUrl,
-            'AttributeNames' => ['ApproximateNumberOfMessages'],
-        ]);
+        try {
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+            $result = $this->sqsClient->getQueueAttributes([
+                'QueueUrl' => $queueUrl,
+                'AttributeNames' => ['ApproximateNumberOfMessages'],
+            ]);
+        } catch (SqsException $e) {
+            throw new QueueAccessException($e->getMessage());
+        }
+
         $result = $result->get('Attributes');
         if (!empty($result['ApproximateNumberOfMessages']) && $result['ApproximateNumberOfMessages'] > 0) {
             return false;
@@ -249,7 +273,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function getNumberMessages($queueName, $priority = null)
     {
@@ -268,11 +292,16 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
-        $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
-        $result = $this->sqsClient->getQueueAttributes([
-            'QueueUrl' => $queueUrl,
-            'AttributeNames' => ['ApproximateNumberOfMessages'],
-        ]);
+        try {
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+            $result = $this->sqsClient->getQueueAttributes([
+                'QueueUrl' => $queueUrl,
+                'AttributeNames' => ['ApproximateNumberOfMessages'],
+            ]);
+        } catch (SqsException $e) {
+            throw new QueueAccessException($e->getMessage());
+        }
+
         $result = $result->get('Attributes');
         if (!empty($result['ApproximateNumberOfMessages']) && $result['ApproximateNumberOfMessages'] > 0) {
             return $result['ApproximateNumberOfMessages'];
@@ -285,7 +314,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function deleteQueue($queueName)
     {
@@ -296,10 +325,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         $priorities = $this->priorityHandler->getAll();
 
         foreach ($priorities as $priority) {
-            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
-            $this->sqsClient->deleteQueue([
-                'QueueUrl' => $queueUrl,
-            ]);
+            try {
+                $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+                $this->sqsClient->deleteQueue([
+                    'QueueUrl' => $queueUrl,
+                ]);
+            } catch (SqsException $e) {
+                throw new QueueAccessException($e->getMessage());
+            }
         }
 
         return $this;
@@ -309,7 +342,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function createQueue($queueName)
     {
@@ -320,10 +353,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         $priorities = $this->priorityHandler->getAll();
 
         foreach ($priorities as $priority) {
-            $this->sqsClient->createQueue([
-                'QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority),
-                'Attributes' => [],
-            ]);
+            try {
+                $this->sqsClient->createQueue([
+                    'QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority),
+                    'Attributes' => [],
+                ]);
+            } catch (SqsException $e) {
+                throw new QueueAccessException($e->getMessage());
+            }
         }
 
         return $this;
@@ -333,7 +370,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
@@ -366,7 +403,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function purgeQueue($queueName, $priority = null)
     {
@@ -384,10 +421,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Queue name empty or not defined.');
         }
 
-        $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
-        $this->sqsClient->purgeQueue([
-            'QueueUrl' => $queueUrl,
-        ]);
+        try {
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
+            $this->sqsClient->purgeQueue([
+                'QueueUrl' => $queueUrl,
+            ]);
+        } catch (SqsException $e) {
+            throw new QueueAccessException($e->getMessage());
+        }
 
         return $this;
     }
@@ -395,18 +436,24 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws SqsException
+     * @throws QueueAccessException
      */
     public function listQueues($prefix = '')
     {
         $listQueues = [];
-        if (empty($prefix)) {
-            $results = $this->sqsClient->listQueues();
-        } else {
-            $results = $this->sqsClient->listQueues([
-                'QueueNamePrefix' => $prefix,
-            ]);
+
+        try {
+            if (empty($prefix)) {
+                $results = $this->sqsClient->listQueues();
+            } else {
+                $results = $this->sqsClient->listQueues([
+                    'QueueNamePrefix' => $prefix,
+                ]);
+            }
+        } catch (SqsException $e) {
+            throw new QueueAccessException($e->getMessage());
         }
+
         $results = $results->get('QueueUrls');
 
         foreach ($results as $result) {
