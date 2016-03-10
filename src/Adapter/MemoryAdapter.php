@@ -2,7 +2,8 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
-use InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\DomainException;
+use ReputationVIP\QueueClient\Exception\InvalidArgumentException
 use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
@@ -70,7 +71,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             $splQueue = $this->queues[$queueName][$priority];
             $splQueue->enqueue($new_message);
         } else {
-            throw new \Exception('priority ' . $priority . ' unknown.');
+            throw new DomainException('Priority ' . $priority . ' unknown.');
         }
 
         return $this;
@@ -106,7 +107,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
         } else {
-            throw new \Exception('priority ' . $message['priority'] . ' unknown.');
+            throw new DomainException('priority ' . $message['priority'] . ' unknown.');
         }
 
         return $this;
@@ -160,7 +161,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
         } else {
-            throw new \Exception('Unknown priority: ' . $priority);
+            throw new DomainException('Unknown priority: ' . $priority);
         }
 
         return $messages;
@@ -188,7 +189,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
-            throw new \Exception('Unknown priority: ' . $priority);
+            throw new DomainException('Unknown priority: ' . $priority);
         }
 
         /** @var SplQueue $splQueue */
@@ -220,7 +221,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
-            throw new \Exception('Unknown priority: ' . $priority);
+            throw new DomainException('Unknown priority: ' . $priority);
         }
 
         foreach ($this->queues[$queueName][$priority] as $key => $message) {
@@ -261,10 +262,10 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (isset($this->queues[$queueName])) {
-            throw new \Exception('A queue named ' . $queueName . ' already exist.');
+            throw new LogicException('A queue named ' . $queueName . ' already exist.');
         }
         if (strpos($queueName, ' ') !== false) {
-            throw new \Exception('Queue name must not contain white spaces.');
+            throw new InvalidArgumentException('Queue name must not contain white spaces.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -324,7 +325,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
-            throw new \Exception('Unknown priority: ' . $priority);
+            throw new DomainException('Unknown priority: ' . $priority);
         }
 
         $this->queues[$queueName][$priority] = new SplQueue();
