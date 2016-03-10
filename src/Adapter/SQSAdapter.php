@@ -4,7 +4,7 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use Aws\Sqs\Exception\SqsException;
 use Aws\Sqs\SqsClient;
-use InvalidArgumentException;
+use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 
@@ -100,6 +100,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
@@ -129,6 +130,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
@@ -179,6 +181,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function deleteMessage($queueName, $message)
@@ -211,6 +214,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function isEmpty($queueName, $priority = null)
@@ -244,6 +248,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function getNumberMessages($queueName, $priority = null)
@@ -279,6 +284,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function deleteQueue($queueName)
@@ -302,6 +308,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function createQueue($queueName)
@@ -325,6 +332,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function renameQueue($sourceQueueName, $targetQueueName)
@@ -357,6 +365,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
+     * @throws InvalidArgumentException
      * @throws SqsException
      */
     public function purgeQueue($queueName, $priority = null)
