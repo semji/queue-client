@@ -6,7 +6,6 @@ use Aws\Sqs\Exception\SqsException;
 use Aws\Sqs\SqsClient;
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
-use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 
@@ -58,14 +57,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws InvalidMessageException
      * @throws QueueAccessException
      */
     public function addMessages($queueName, $messages, $priority = null)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (null === $priority) {
@@ -111,14 +110,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (empty($message)) {
@@ -147,7 +146,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
@@ -167,14 +166,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!is_numeric($nbMsg)) {
-            throw new InvalidArgumentException('Number of messages must be numeric.');
+            throw new \InvalidArgumentException('Number of messages must be numeric.');
         }
         if ($nbMsg <= 0 || $nbMsg > self::MAX_NB_MESSAGES) {
-            throw new InvalidArgumentException('Number of messages not valid.');
+            throw new \InvalidArgumentException('Number of messages not valid.');
         }
 
         try {
@@ -202,14 +201,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws InvalidMessageException
      * @throws QueueAccessException
      */
     public function deleteMessage($queueName, $message)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (empty($message)) {
@@ -241,7 +240,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function isEmpty($queueName, $priority = null)
@@ -256,7 +255,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         try {
@@ -280,7 +279,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function getNumberMessages($queueName, $priority = null)
@@ -297,7 +296,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         try {
@@ -321,13 +320,13 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function deleteQueue($queueName)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -349,13 +348,13 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function createQueue($queueName)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -377,16 +376,16 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
         if (empty($sourceQueueName)) {
-            throw new InvalidArgumentException('Source queue name empty or not defined.');
+            throw new \InvalidArgumentException('Source queue name empty or not defined.');
         }
         if (empty($targetQueueName)) {
-            throw new InvalidArgumentException('Target queue name empty or not defined.');
+            throw new \InvalidArgumentException('Target queue name empty or not defined.');
         }
         $this->createQueue($targetQueueName);
 
@@ -410,7 +409,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function purgeQueue($queueName, $priority = null)
@@ -426,7 +425,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         try {

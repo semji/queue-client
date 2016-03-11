@@ -6,7 +6,6 @@ use ReputationVIP\QueueClient\Adapter\AdapterInterface;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Adapter\NullAdapter;
 use ReputationVIP\QueueClient\Exception\QueueAliasException;
-use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 
 class QueueClient implements QueueClientInterface
 {
@@ -237,7 +236,8 @@ class QueueClient implements QueueClientInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
+     * @throws QueueAliasException
      * @throws QueueAccessException
      */
     public function addAlias($queueName, $alias)
@@ -245,11 +245,11 @@ class QueueClient implements QueueClientInterface
         $listQueues = $this->listQueues();
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name is empty.');
+            throw new \InvalidArgumentException('Queue name is empty.');
         }
 
         if (empty($alias)) {
-            throw new InvalidArgumentException('Alias is empty.');
+            throw new QueueAliasException('Alias is empty.');
         }
 
         if (!in_array($queueName, $listQueues)) {

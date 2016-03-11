@@ -4,7 +4,6 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
-use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 use ReputationVIP\QueueClient\PriorityHandler\Exception\InvalidPriorityException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
@@ -45,7 +44,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws InvalidMessageException
      * @throws QueueAccessException
      * @throws InvalidPriorityException
@@ -53,7 +52,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (empty($message)) {
@@ -88,14 +87,14 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws InvalidMessageException
      * @throws InvalidPriorityException
      */
     public function deleteMessage($queueName, $message)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (empty($message)) {
@@ -131,7 +130,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
@@ -140,7 +139,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         $messages = [];
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (null === $priority) {
@@ -190,14 +189,14 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
     public function isEmpty($queueName, $priority = null)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (null === $priority) {
@@ -224,7 +223,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
@@ -233,7 +232,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         $nbrMsg = 0;
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (null === $priority) {
@@ -265,13 +264,13 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function deleteQueue($queueName, $nb_try = 0)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$queueName])) {
@@ -286,17 +285,17 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function createQueue($queueName)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (strpos($queueName, ' ') !== false) {
-            throw new InvalidArgumentException('Queue name must not contain white spaces.');
+            throw new \InvalidArgumentException('Queue name must not contain white spaces.');
         }
 
         if (isset($this->queues[$queueName])) {
@@ -314,17 +313,17 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
         if (empty($sourceQueueName)) {
-            throw new InvalidArgumentException('Source queue name empty or not defined.');
+            throw new \InvalidArgumentException('Source queue name empty or not defined.');
         }
 
         if (empty($targetQueueName)) {
-            throw new InvalidArgumentException('Target queue name empty or not defined.');
+            throw new \InvalidArgumentException('Target queue name empty or not defined.');
         }
 
         if (!isset($this->queues[$sourceQueueName])) {
@@ -345,14 +344,14 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
     public function purgeQueue($queueName, $priority = null)
     {
         if (empty($queueName)) {
-            throw new InvalidArgumentException('Queue name empty or not defined.');
+            throw new \InvalidArgumentException('Queue name empty or not defined.');
         }
 
         if (null === $priority) {
