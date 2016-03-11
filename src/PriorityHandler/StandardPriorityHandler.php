@@ -2,7 +2,6 @@
 
 namespace ReputationVIP\QueueClient\PriorityHandler;
 
-use ReputationVIP\QueueClient\Exception\RangeException;
 use ReputationVIP\QueueClient\PriorityHandler\Exception\LevelException;
 
 class StandardPriorityHandler implements PriorityHandlerInterface
@@ -187,12 +186,12 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws RangeException
+     * @throws \RangeException
      */
     public function getName($index)
     {
         if ($index < 0 || $index >= count($this->priorities)) {
-            throw new RangeException('Level index out of range.');
+            throw new \RangeException('Level index out of range.');
         }
         return $this->priorities[$index];
     }
