@@ -4,7 +4,6 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
-use ReputationVIP\QueueClient\Exception\UnexpectedValueException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
@@ -121,7 +120,6 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @return array
      *
      * @throws QueueAccessException
-     * @throws UnexpectedValueException
      * @throws \Exception
      */
     private function readQueueFromFile($queueName, $priority, $nbTries = 0)
@@ -145,7 +143,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
+                throw new QueueAccessException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
         } catch (\Exception $e) {
@@ -200,7 +198,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @return AdapterInterface
      *
      * @throws QueueAccessException
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      * @throws \Exception
      */
     private function addMessageLock($queueName, $message, $priority, $nbTries = 0, $delaySeconds = 0)
@@ -224,11 +222,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
+                throw new QueueAccessException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
             if (!(isset($queue['queue']))) {
-                throw new UnexpectedValueException('Queue content bad format.');
+                throw new \UnexpectedValueException('Queue content bad format.');
             }
             $new_message = [
                 'id' => uniqid($queueName . $priority, true),
@@ -286,7 +284,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @return array
      *
      * @throws QueueAccessException
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      * @throws \Exception
      */
     private function getMessagesLock($queueName, $nbMsg, $priority, $nbTries = 0)
@@ -311,11 +309,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
+                throw new QueueAccessException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
             if (!isset($queue['queue'])) {
-                throw new UnexpectedValueException('Queue content bad format.');
+                throw new \UnexpectedValueException('Queue content bad format.');
             }
             foreach ($queue['queue'] as $key => $message) {
                 $timeDiff = time() - $message['time-in-flight'];
@@ -394,7 +392,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @return AdapterInterface
      *
      * @throws QueueAccessException
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      * @throws \Exception
      */
     private function deleteMessageLock($queueName, $message, $priority, $nbTries = 0)
@@ -417,11 +415,11 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
             if (empty($content)) {
-                throw new UnexpectedValueException('Fail to get content from file ' . $queueFilePath);
+                throw new QueueAccessException('Fail to get content from file ' . $queueFilePath);
             }
             $queue = json_decode($content, true);
             if (!isset($queue['queue'])) {
-                throw new UnexpectedValueException('Queue content bad format.');
+                throw new \UnexpectedValueException('Queue content bad format.');
             }
             foreach ($queue['queue'] as $key => $messageIterator) {
                 if ($messageIterator['id'] === $message['id']) {
@@ -483,7 +481,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     public function isEmpty($queueName, $priority = null)
     {
@@ -506,7 +504,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
         $queue = $this->readQueueFromFile($queueName, $priority);
         if (!(isset($queue['queue']))) {
-            throw new UnexpectedValueException('Queue content bad format.');
+            throw new \UnexpectedValueException('Queue content bad format.');
         }
 
         return count($queue['queue']) > 0 ? false : true;
@@ -517,7 +515,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     public function getNumberMessages($queueName, $priority = null)
     {
@@ -542,7 +540,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
         $queue = $this->readQueueFromFile($queueName, $priority);
         if (!(isset($queue['queue']))) {
-            throw new UnexpectedValueException('Queue content bad format.');
+            throw new \UnexpectedValueException('Queue content bad format.');
         }
         foreach ($queue['queue'] as $key => $message) {
             $timeDiff = time() - $message['time-in-flight'];
@@ -676,7 +674,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     public function purgeQueue($queueName, $priority = null)
     {
@@ -699,7 +697,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
 
         $queue = $this->readQueueFromFile($queueName, $priority);
         if (!isset($queue['queue'])) {
-            throw new UnexpectedValueException('Queue content bad format.');
+            throw new \UnexpectedValueException('Queue content bad format.');
         }
         $queue['queue'] = [];
         $this->writeQueueInFile($queueName, $priority, $queue);
