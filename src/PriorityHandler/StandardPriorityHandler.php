@@ -2,7 +2,7 @@
 
 namespace ReputationVIP\QueueClient\PriorityHandler;
 
-use ReputationVIP\QueueClient\PriorityHandler\Exception\LevelException;
+use ReputationVIP\QueueClient\PriorityHandler\Exception\PriorityLevelException;
 
 class StandardPriorityHandler implements PriorityHandlerInterface
 {
@@ -19,12 +19,12 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function add($name)
     {
         if (in_array($name, $this->priorities)) {
-            throw new LevelException('Level ' . $name . ' already exists.');
+            throw new PriorityLevelException('Level ' . $name . ' already exists.');
         }
         $this->priorities[] = $name;
         return $this;
@@ -33,13 +33,13 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function remove($name)
     {
         $key = array_search($name, $this->priorities);
         if (false === $key) {
-            throw new LevelException("Level " . $name . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $name . " doesn't exist.");
         }
         $default = $this->getDefault();
         unset($this->priorities[$key]);
@@ -55,14 +55,14 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function addBefore($addName, $beforeName)
     {
         $key = array_search($beforeName, $this->priorities);
         if (false !== $key) {
             if (in_array($addName, $this->priorities)) {
-                throw new LevelException('Level ' . $addName . ' already exists.');
+                throw new PriorityLevelException('Level ' . $addName . ' already exists.');
             }
             $default = $this->getDefault();
             if (0 === $key) {
@@ -75,7 +75,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
             }
             $this->setDefault($default);
         } else {
-            throw new LevelException("Level " . $beforeName . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $beforeName . " doesn't exist.");
         }
         return $this;
     }
@@ -83,7 +83,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function removeBefore($beforeName)
     {
@@ -101,7 +101,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
                 }
             }
         } else {
-            throw new LevelException("Level " . $beforeName . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $beforeName . " doesn't exist.");
         }
         return $this;
     }
@@ -109,14 +109,14 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function addAfter($addName, $afterName)
     {
         $key = array_search($afterName, $this->priorities);
         if (false !== $key) {
             if (in_array($addName, $this->priorities)) {
-                throw new LevelException('Level ' . $addName . ' already exists.');
+                throw new PriorityLevelException('Level ' . $addName . ' already exists.');
             }
             $default = $this->getDefault();
             if ($key === (count($this->priorities) - 1)) {
@@ -129,7 +129,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
             }
             $this->setDefault($default);
         } else {
-            throw new LevelException("Level " . $afterName . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $afterName . " doesn't exist.");
         }
         return $this;
     }
@@ -137,7 +137,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function removeAfter($afterName)
     {
@@ -155,7 +155,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
                 }
             }
         } else {
-            throw new LevelException("Level " . $afterName . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $afterName . " doesn't exist.");
         }
         return $this;
     }
@@ -210,7 +210,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function setDefault($newDefault)
     {
@@ -221,7 +221,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         if (false !== $key) {
             $this->defaultIndex = $key;
         } else {
-            throw new LevelException("Level " . $newDefault . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $newDefault . " doesn't exist.");
         }
 
         return $this;
@@ -252,14 +252,14 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function getBefore($beforeName)
     {
         $key = array_search($beforeName, $this->priorities);
 
         if (false === $key) {
-            throw new LevelException("Level " . $beforeName . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $beforeName . " doesn't exist.");
         }
 
         if (0 === $key) {
@@ -272,14 +272,14 @@ class StandardPriorityHandler implements PriorityHandlerInterface
     /**
      * @inheritdoc
      *
-     * @throws LevelException
+     * @throws PriorityLevelException
      */
     public function getAfter($afterName)
     {
         $key = array_search($afterName, $this->priorities);
 
         if (false === $key) {
-            throw new LevelException("Level " . $afterName . " doesn't exist.");
+            throw new PriorityLevelException("Level " . $afterName . " doesn't exist.");
         }
 
         if (count($this->priorities) - 1 === $key) {
