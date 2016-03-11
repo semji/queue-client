@@ -4,8 +4,8 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
-use ReputationVIP\QueueClient\Exception\DomainException;
 use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
+use ReputationVIP\QueueClient\PriorityHandler\Exception\InvalidPriorityException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use SplQueue;
@@ -48,6 +48,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @throws InvalidArgumentException
      * @throws InvalidMessageException
      * @throws QueueAccessException
+     * @throws InvalidPriorityException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
@@ -78,7 +79,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             $splQueue = $this->queues[$queueName][$priority];
             $splQueue->enqueue($new_message);
         } else {
-            throw new DomainException('Unknown priority: ' . $priority);
+            throw new InvalidPriorityException('Unknown priority: ' . $priority);
         }
 
         return $this;
@@ -89,7 +90,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws InvalidMessageException
-     * @throws DomainException
+     * @throws InvalidPriorityException
      */
     public function deleteMessage($queueName, $message)
     {
@@ -121,7 +122,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
         } else {
-            throw new DomainException('Unknown priority: ' . $message['priority']);
+            throw new InvalidPriorityException('Unknown priority: ' . $message['priority']);
         }
 
         return $this;
@@ -132,7 +133,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws QueueAccessException
-     * @throws DomainException
+     * @throws InvalidPriorityException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
@@ -180,7 +181,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
         } else {
-            throw new DomainException('Unknown priority: ' . $priority);
+            throw new InvalidPriorityException('Unknown priority: ' . $priority);
         }
 
         return $messages;
@@ -191,7 +192,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws QueueAccessException
-     * @throws DomainException
+     * @throws InvalidPriorityException
      */
     public function isEmpty($queueName, $priority = null)
     {
@@ -212,7 +213,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
-            throw new DomainException('Unknown priority: ' . $priority);
+            throw new InvalidPriorityException('Unknown priority: ' . $priority);
         }
 
         /** @var SplQueue $splQueue */
@@ -225,7 +226,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws QueueAccessException
-     * @throws DomainException
+     * @throws InvalidPriorityException
      */
     public function getNumberMessages($queueName, $priority = null)
     {
@@ -248,7 +249,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
-            throw new DomainException('Unknown priority: ' . $priority);
+            throw new InvalidPriorityException('Unknown priority: ' . $priority);
         }
 
         foreach ($this->queues[$queueName][$priority] as $key => $message) {
@@ -346,7 +347,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws QueueAccessException
-     * @throws DomainException
+     * @throws InvalidPriorityException
      */
     public function purgeQueue($queueName, $priority = null)
     {
@@ -367,7 +368,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
-            throw new DomainException('Unknown priority: ' . $priority);
+            throw new InvalidPriorityException('Unknown priority: ' . $priority);
         }
 
         $this->queues[$queueName][$priority] = new SplQueue();

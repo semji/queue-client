@@ -3,9 +3,9 @@
 namespace ReputationVIP\QueueClient;
 
 use ReputationVIP\QueueClient\Adapter\AdapterInterface;
+use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Adapter\NullAdapter;
 use ReputationVIP\QueueClient\Exception\QueueAliasException;
-use ReputationVIP\QueueClient\Exception\DomainException;
 use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
 
 class QueueClient implements QueueClientInterface
@@ -238,7 +238,7 @@ class QueueClient implements QueueClientInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws DomainException
+     * @throws QueueAccessException
      */
     public function addAlias($queueName, $alias)
     {
@@ -253,7 +253,7 @@ class QueueClient implements QueueClientInterface
         }
 
         if (!in_array($queueName, $listQueues)) {
-            throw new DomainException('Attempting to create alias on unknown queue.');
+            throw new QueueAccessException('Attempting to create alias on unknown queue.');
         }
 
         if (empty($this->aliases[$alias])) {
@@ -269,7 +269,7 @@ class QueueClient implements QueueClientInterface
     /**
      * @inheritdoc
      *
-     * @throws DomainException
+     * @throws QueueAliasException
      */
     public function removeAlias($alias)
     {
@@ -280,7 +280,7 @@ class QueueClient implements QueueClientInterface
                 unset($this->aliases[$alias]);
             }
         } else {
-            throw new DomainException('No alias found.');
+            throw new QueueAliasException('No alias found.');
         }
         return $this;
     }
