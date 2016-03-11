@@ -173,13 +173,12 @@ class StandardPriorityHandler implements PriorityHandlerInterface
      */
     public function getLowest()
     {
-        $lowest = end(array_values($this->priorities));
-
-        if (false === $lowest) {
+        if (empty($this->priorities)) {
             return new Priority('', 0);
         }
 
-        return $lowest;
+        $priorityNames = array_values($this->priorities);
+        return $priorityNames[count($priorityNames) - 1];
     }
 
     /**
