@@ -5,7 +5,6 @@ namespace ReputationVIP\QueueClient\Adapter;
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
-use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\Exception\UnexpectedValueException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
@@ -254,7 +253,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws InvalidMessageException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
@@ -271,7 +270,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $this->addMessageLock($queueName, $message, $priority);
@@ -350,7 +349,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
@@ -381,8 +380,9 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
+
         return $this->getMessagesLock($queueName, $nbMsg, $priority);
     }
 
@@ -446,7 +446,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws InvalidMessageException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     public function deleteMessage($queueName, $message)
     {
@@ -471,7 +471,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $message['priority']))) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $this->deleteMessageLock($queueName, $message, $message['priority']);
@@ -483,7 +483,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      * @throws UnexpectedValueException
      */
     public function isEmpty($queueName, $priority = null)
@@ -502,7 +502,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);
@@ -517,7 +517,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      * @throws UnexpectedValueException
      */
     public function getNumberMessages($queueName, $priority = null)
@@ -538,7 +538,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);
@@ -561,14 +561,12 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param int $nbTries
      *
      * @return AdapterInterface
-     *
-     * @throws LogicException
      * @throws QueueAccessException
      */
     private function deleteQueueLock($queueName, $priority, $nbTries = 0)
     {
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queueFilePath = $this->getQueuePath($queueName, $priority);
@@ -609,7 +607,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param string $priority
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     private function createQueueLock($queueName, $priority)
     {
@@ -618,7 +616,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if ($this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new LogicException('A queue named ' . $queueName . ' already exist.');
+            throw new QueueAccessException('A queue named ' . $queueName . ' already exist.');
         }
 
         $queue = [
@@ -678,7 +676,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      * @throws UnexpectedValueException
      */
     public function purgeQueue($queueName, $priority = null)
@@ -697,7 +695,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!$this->fs->exists($this->getQueuePath($queueName, $priority))) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         $queue = $this->readQueueFromFile($queueName, $priority);

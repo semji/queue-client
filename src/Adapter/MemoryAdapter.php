@@ -3,9 +3,9 @@
 namespace ReputationVIP\QueueClient\Adapter;
 
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
+use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Exception\DomainException;
 use ReputationVIP\QueueClient\Exception\InvalidArgumentException;
-use ReputationVIP\QueueClient\Exception\LogicException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 use SplQueue;
@@ -47,7 +47,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      *
      * @throws InvalidArgumentException
      * @throws InvalidMessageException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
@@ -64,7 +64,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         if (isset($this->queues[$queueName][$priority])) {
@@ -131,7 +131,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      * @throws DomainException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
@@ -157,7 +157,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         if (isset($this->queues[$queueName][$priority])) {
@@ -190,7 +190,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      * @throws DomainException
      */
     public function isEmpty($queueName, $priority = null)
@@ -209,7 +209,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new DomainException('Unknown priority: ' . $priority);
@@ -224,7 +224,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      * @throws DomainException
      */
     public function getNumberMessages($queueName, $priority = null)
@@ -245,7 +245,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new DomainException('Unknown priority: ' . $priority);
@@ -265,7 +265,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     public function deleteQueue($queueName, $nb_try = 0)
     {
@@ -274,7 +274,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
         unset($this->queues[$queueName]);
@@ -286,7 +286,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     public function createQueue($queueName)
     {
@@ -299,7 +299,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (isset($this->queues[$queueName])) {
-            throw new LogicException('A queue named ' . $queueName . ' already exist.');
+            throw new QueueAccessException('A queue named ' . $queueName . ' already exist.');
         }
 
         $priorities = $this->priorityHandler->getAll();
@@ -314,7 +314,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      */
     public function renameQueue($sourceQueueName, $targetQueueName)
     {
@@ -327,11 +327,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$sourceQueueName])) {
-            throw new LogicException("Queue " . $sourceQueueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $sourceQueueName . " doesn't exist, please create it before using it.");
         }
 
         if (isset($this->queues[$targetQueueName])) {
-            throw new LogicException("Queue " . $targetQueueName . ' already exist.');
+            throw new QueueAccessException("Queue " . $targetQueueName . ' already exist.');
         }
 
         $this->createQueue($targetQueueName);
@@ -345,7 +345,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @inheritdoc
      *
      * @throws InvalidArgumentException
-     * @throws LogicException
+     * @throws QueueAccessException
      * @throws DomainException
      */
     public function purgeQueue($queueName, $priority = null)
@@ -364,7 +364,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (!isset($this->queues[$queueName])) {
-            throw new LogicException("Queue " . $queueName . " doesn't exist, please create it before using it.");
+            throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
         if (!isset($this->queues[$queueName][$priority])) {
             throw new DomainException('Unknown priority: ' . $priority);
