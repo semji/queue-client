@@ -65,7 +65,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         }
         $default = $this->getDefault();
         unset($this->priorities[$priority->getLevel()]);
-        if ($priority === $default) {
+        if ($priority->getLevel() === $default->getLevel()) {
             $this->defaultIndex = 0;
         } else {
             $this->setDefault($default);
@@ -122,7 +122,6 @@ class StandardPriorityHandler implements PriorityHandlerInterface
      */
     public function setDefault(Priority $priority)
     {
-
         if (!isset($this->priorities[$priority->getLevel()])) {
             throw new PriorityLevelException('Level ' . $priority->getLevel() . ' doesn\'t exist.');
         }
@@ -137,19 +136,13 @@ class StandardPriorityHandler implements PriorityHandlerInterface
      */
     public function getPriorityByName($name)
     {
-        $returnPriority = null;
         foreach ($this->priorities as $priority) {
             if ($priority->getName() === $name) {
-                $returnPriority = $priority;
-                break;
+                return $priority;
             }
         }
 
-        if (null === $returnPriority) {
-            throw new \InvalidArgumentException('Level name' . $name . ' doesn\'t exist.');
-        }
-
-        return $returnPriority;
+        throw new \InvalidArgumentException('Level name' . $name . ' doesn\'t exist.');
     }
 
     /**
@@ -180,7 +173,13 @@ class StandardPriorityHandler implements PriorityHandlerInterface
      */
     public function getLowest()
     {
-        return end(array_values($this->priorities));
+        $lowest = end(array_values($this->priorities));
+
+        if (false === $lowest) {
+            return new Priority('', 0);
+        }
+
+        return $lowest;
     }
 
     /**
@@ -199,9 +198,6 @@ class StandardPriorityHandler implements PriorityHandlerInterface
         while ($searchPriority = next($this->priorities)) {
             if ($searchPriority->getLevel() === $priority->getLevel()) {
                 $prevPriority = prev($this->priorities);
-                if (false === $prevPriority) {
-                    return $searchPriority;
-                }
                 return $prevPriority;
             }
         }
@@ -224,7 +220,7 @@ class StandardPriorityHandler implements PriorityHandlerInterface
             if (false === $nextPriority) {
                 return $searchPriority;
             }
-            return $searchPriority;
+            return $nextPriority;
         }
         while ($searchPriority = next($this->priorities)) {
             if ($searchPriority->getLevel() === $priority->getLevel()) {

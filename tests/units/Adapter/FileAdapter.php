@@ -27,7 +27,7 @@ class FileAdapter extends atoum\test
 
     public function testFileAdapter__construct()
     {
-        $this->object($this->newTestedInstance('/tmp/test/'));
+        $this->object(new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/'));
     }
 
     public function testFileAdapter__constructWithFilesystemError(Filesystem $fs, Finder $finder, LockHandlerFactory $lockHandlerFactory)
@@ -1387,9 +1387,7 @@ class FileAdapter extends atoum\test
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = function ($queue) {
-            static $i = 0;
-            if ($i < 3) {
-                $i++;
+            if (strstr($queue, 'new')) {
                 return false;
             }
             return true;
