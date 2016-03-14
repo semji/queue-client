@@ -787,7 +787,7 @@ class FileAdapter extends atoum\test
             $files = [];
             $priorities = $priorityHandler->getAll();
             foreach ($priorities as $priority) {
-                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority.'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
+                $files[] = 'testQueue'.\ReputationVIP\QueueClient\Adapter\FileAdapter::PRIORITY_SEPARATOR.$priority->getName().'.'.\ReputationVIP\QueueClient\Adapter\FileAdapter::QUEUE_FILE_EXTENSION;
             }
             $mocksSplFileInfo = [];
             foreach ($files as $file) {
