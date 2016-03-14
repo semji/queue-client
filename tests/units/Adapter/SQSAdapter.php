@@ -12,10 +12,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->addMessage('', '');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->addMessage('', '');
         });
     }
 
@@ -24,10 +24,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->addMessage('testQueue', '');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->addMessage('testQueue', '');
         });
     }
 
@@ -37,15 +37,15 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
         };
         $mockSqsClient->getMockController()->sendMessage = function () {
         };
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->addMessage('testQueue', 'test message'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->addMessage('testQueue', 'test message'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterAddMessages()
@@ -54,15 +54,15 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
         };
         $mockSqsClient->getMockController()->sendMessageBatch = function () {
         };
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->addMessages('testQueue', array_fill(0, 11, 'test message')))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->addMessages('testQueue', array_fill(0, 11, 'test message')))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterAddMessagesWithEmptyMessage()
@@ -70,10 +70,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->addMessages('testQueue', ['test message', '']);
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->addMessages('testQueue', ['test message', '']);
         });
     }
 
@@ -82,10 +82,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->addMessages('', ['']);
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->addMessages('', ['']);
         });
     }
 
@@ -94,10 +94,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->getMessages('');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->getMessages('');
         });
     }
 
@@ -106,18 +106,18 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->getMessages('testQueue', 'BadNumber');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->getMessages('testQueue', 'BadNumber');
         });
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->getMessages('testQueue', 0);
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->getMessages('testQueue', 0);
         });
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->getMessages('testQueue', \ReputationVIP\QueueClient\Adapter\SQSAdapter::MAX_NB_MESSAGES + 1);
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->getMessages('testQueue', \ReputationVIP\QueueClient\Adapter\SQSAdapter::MAX_NB_MESSAGES + 1);
         });
     }
 
@@ -127,7 +127,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -138,8 +138,8 @@ class SQSAdapter extends atoum\test
         $mockSqsClient->getMockController()->receiveMessage = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
         };
-        $this->given($SQSAdapter)
-            ->array($SQSAdapter->getMessages('testQueue', 5))->isEmpty();
+        $this->given($sqsAdapter)
+            ->array($sqsAdapter->getMessages('testQueue', 5))->isEmpty();
     }
 
     public function testSQSAdapterGetMessages()
@@ -149,7 +149,7 @@ class SQSAdapter extends atoum\test
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -160,8 +160,8 @@ class SQSAdapter extends atoum\test
         $mockSqsClient->getMockController()->receiveMessage = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
         };
-        $this->given($SQSAdapter)
-            ->array($SQSAdapter->getMessages('testQueue', 6))->hasSize(6);
+        $this->given($sqsAdapter)
+            ->array($sqsAdapter->getMessages('testQueue', 6))->hasSize(6);
     }
 
     public function testSQSAdapterDeleteMessageWithEmptyQueueName()
@@ -169,10 +169,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->deleteMessage('', []);
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->deleteMessage('', []);
         });
     }
 
@@ -181,10 +181,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->deleteMessage('testQueue', []);
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->deleteMessage('testQueue', []);
         });
     }
 
@@ -193,10 +193,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->deleteMessage('testQueue', 'Bad message');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->deleteMessage('testQueue', 'Bad message');
         });
     }
 
@@ -206,10 +206,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
 
-        $this->exception(function() use($SQSAdapter, $priorityHandler) {
-            $SQSAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest()]);
+        $this->exception(function() use($sqsAdapter, $priorityHandler) {
+            $sqsAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest()]);
         });
     }
 
@@ -218,10 +218,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->deleteMessage('testQueue', ['ReceiptHandle' => 'testReceiptHandle']);
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->deleteMessage('testQueue', ['ReceiptHandle' => 'testReceiptHandle']);
         });
     }
 
@@ -232,7 +232,7 @@ class SQSAdapter extends atoum\test
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -243,8 +243,8 @@ class SQSAdapter extends atoum\test
         $mockSqsClient->getMockController()->deleteMessage = function () use($mockQueueUrlModel) {
             return null;
         };
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest(), 'ReceiptHandle' => 'testReceiptHandle']))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->deleteMessage('testQueue', ['priority' => $priorityHandler->getHighest(), 'ReceiptHandle' => 'testReceiptHandle']))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterIsEmptyWithEmptyQueueName()
@@ -252,10 +252,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->isEmpty('');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->isEmpty('');
         });
     }
 
@@ -265,7 +265,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -277,8 +277,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->boolean($SQSAdapter->isEmpty('testQueue'))->IsTrue();
+        $this->given($sqsAdapter)
+            ->boolean($sqsAdapter->isEmpty('testQueue'))->IsTrue();
     }
 
     public function testSQSAdapterIsEmpty()
@@ -287,7 +287,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -299,8 +299,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->boolean($SQSAdapter->isEmpty('testQueue'))->IsFalse();
+        $this->given($sqsAdapter)
+            ->boolean($sqsAdapter->isEmpty('testQueue'))->IsFalse();
     }
 
     public function testSQSAdapterGetNumberMessagesWithEmptyQueueName()
@@ -308,10 +308,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->getNumberMessages('');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->getNumberMessages('');
         });
     }
 
@@ -321,7 +321,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -333,8 +333,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->integer($SQSAdapter->getNumberMessages('testQueue'))->IsEqualTo(0);
+        $this->given($sqsAdapter)
+            ->integer($sqsAdapter->getNumberMessages('testQueue'))->IsEqualTo(0);
     }
 
     public function testSQSAdapterGetNumberMessages()
@@ -344,7 +344,7 @@ class SQSAdapter extends atoum\test
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
         $priorityHandler =new ThreeLevelPriorityHandler();
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -356,8 +356,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->integer($SQSAdapter->getNumberMessages('testQueue'))->IsEqualTo(18);
+        $this->given($sqsAdapter)
+            ->integer($sqsAdapter->getNumberMessages('testQueue'))->IsEqualTo(18);
     }
 
     public function testSQSAdapterDeleteQueueWithEmptyQueueName()
@@ -365,10 +365,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->deleteQueue('');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->deleteQueue('');
         });
     }
 
@@ -378,7 +378,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -390,8 +390,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->deleteQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->deleteQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterCreateQueueWithEmptyQueueName()
@@ -399,10 +399,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->createQueue('');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->createQueue('');
         });
     }
 
@@ -412,7 +412,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -424,8 +424,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->createQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->createQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterPurgeQueueWithEmptyQueueName()
@@ -433,10 +433,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->purgeQueue('');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->purgeQueue('');
         });
     }
 
@@ -446,7 +446,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -458,8 +458,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->purgeQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->purgeQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterListQueuesWithPrefix()
@@ -469,7 +469,7 @@ class SQSAdapter extends atoum\test
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -481,8 +481,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->array($SQSAdapter->listQueues('prefix'))->containsValues(['prefixTestQueueOne', 'prefixTestQueueTwo']);
+        $this->given($sqsAdapter)
+            ->array($sqsAdapter->listQueues('prefix'))->containsValues(['prefixTestQueueOne', 'prefixTestQueueTwo']);
     }
 
     public function testSQSAdapterListQueues()
@@ -492,7 +492,7 @@ class SQSAdapter extends atoum\test
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -504,8 +504,8 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->array($SQSAdapter->listQueues())->containsValues(['testQueueOne', 'prefixTestQueueOne', 'prefixTestQueueTwo']);
+        $this->given($sqsAdapter)
+            ->array($sqsAdapter->listQueues())->containsValues(['testQueueOne', 'prefixTestQueueOne', 'prefixTestQueueTwo']);
     }
 
     public function testSQSAdapterRenameQueueWithEmptySourceQueueName()
@@ -513,10 +513,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->renameQueue('', 'targetQueue');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->renameQueue('', 'targetQueue');
         });
     }
 
@@ -525,10 +525,10 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->orphanize('__construct');
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
-        $this->exception(function() use($SQSAdapter) {
-            $SQSAdapter->renameQueue('sourceQueue', '');
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->renameQueue('sourceQueue', '');
         });
     }
 
@@ -539,7 +539,7 @@ class SQSAdapter extends atoum\test
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -574,8 +574,8 @@ class SQSAdapter extends atoum\test
         };
         $mockSqsClient->getMockController()->deleteQueue = function () use($mockQueueUrlModel) {
         };
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->renameQueue('sourceQueue', 'targetQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->renameQueue('sourceQueue', 'targetQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testSQSAdapterGetPrioritiesHandler()
@@ -584,7 +584,7 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
@@ -596,7 +596,7 @@ class SQSAdapter extends atoum\test
             return $mockQueueUrlModel;
         };
 
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->getPriorityHandler())->hasInterface('\ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface');
+        $this->given($sqsAdapter)
+            ->class($sqsAdapter->getPriorityHandler())->hasInterface('\ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface');
     }
 }

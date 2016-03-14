@@ -16,19 +16,19 @@ class MemoryAdapter extends atoum\test
 
     public function testMemoryAdapterCreateQueueWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->createQueue('');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->createQueue('');
         });
     }
 
     public function testMemoryAdapterCreateQueueWithQueueNameSpace()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->createQueue('test Queue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->createQueue('test Queue');
         });
     }
 
@@ -78,186 +78,186 @@ class MemoryAdapter extends atoum\test
 
     public function testMemoryAdapterRenameQueue()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter->renameQueue('testQueue', 'newTestQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $memoryAdapter->createQueue('testQueue');
+        $this->given($memoryAdapter)
+            ->class($memoryAdapter->renameQueue('testQueue', 'newTestQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testMemoryAdapterRenameQueueWithEmptyTargetQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->renameQueue('testQueue', '');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->renameQueue('testQueue', '');
         });
     }
 
     public function testMemoryAdapterRenameQueueWithTargetQueueExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->createQueue('newTestQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->renameQueue('testQueue', 'newTestQueue');
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->createQueue('newTestQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->renameQueue('testQueue', 'newTestQueue');
         });
     }
 
     public function testMemoryAdapterRenameQueueWithEmptySourceQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->renameQueue('', 'newTestQueue');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->renameQueue('', 'newTestQueue');
         });
     }
 
     public function testMemoryAdapterRenameQueueWithSourceQueueDoesNotExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->renameQueue('testQueue', 'newTestQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->renameQueue('testQueue', 'newTestQueue');
         });
     }
 
     public function testMemoryAdapterPurgeQueue()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter->purgeQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $memoryAdapter->createQueue('testQueue');
+        $this->given($memoryAdapter)
+            ->class($memoryAdapter->purgeQueue('testQueue'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testMemoryAdapterPurgeQueueWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->purgeQueue('');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->purgeQueue('');
         });
     }
 
     public function testMemoryAdapterPurgeQueueWithQueueDoesNotExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->purgeQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->purgeQueue('testQueue');
         });
     }
 
     public function testMemoryAdapterPurgeQueueWithBadPriority()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->purgeQueue('testQueue', 'BAD_PRIORITY');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->purgeQueue('testQueue', 'BAD_PRIORITY');
         });
     }
 
     public function testMemoryAdapterAddMessage()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter->AddMessage('testQueue', 'test message'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $memoryAdapter->createQueue('testQueue');
+        $this->given($memoryAdapter)
+            ->class($memoryAdapter->addMessage('testQueue', 'test message'))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testMemoryAdapterAddMessageWithDelay()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter = $MemoryAdapter->AddMessage('testQueue', 'test message', null, 1);
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter = $memoryAdapter->addMessage('testQueue', 'test message', null, 1);
         sleep(1);
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter)->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($memoryAdapter)
+            ->class($memoryAdapter)->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testMemoryAdapterAddMessageWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->AddMessage('', 'test message');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->addMessage('', 'test message');
         });
     }
 
     public function testMemoryAdapterAddMessageWithNoQueue()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->AddMessage('testQueue', 'test message');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->addMessage('testQueue', 'test message');
         });
     }
 
     public function testMemoryAdapterAddMessageWithEmptyMessage()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->AddMessage('testQueue', '');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->addMessage('testQueue', '');
         });
     }
 
     public function testMemoryAdapterAddMessageWithBadPriority()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->AddMessage('testQueue', 'test message', 'BAD_PRIORITY');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->addMessage('testQueue', 'test message', 'BAD_PRIORITY');
         });
     }
 
     public function testMemoryAdapterIsEmpty()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->given($MemoryAdapter)
-            ->boolean($MemoryAdapter->isEmpty('testQueue'))->isTrue();
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $this->given($MemoryAdapter)
-            ->boolean($MemoryAdapter->isEmpty('testQueue'))->isFalse();
+        $memoryAdapter->createQueue('testQueue');
+        $this->given($memoryAdapter)
+            ->boolean($memoryAdapter->isEmpty('testQueue'))->isTrue();
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $this->given($memoryAdapter)
+            ->boolean($memoryAdapter->isEmpty('testQueue'))->isFalse();
     }
 
     public function testMemoryAdapterIsEmptyWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->isEmpty('');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->isEmpty('');
         });
     }
 
     public function testMemoryAdapterIsEmptyWithQueueDoesNotExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->isEmpty('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->isEmpty('testQueue');
         });
     }
 
     public function testMemoryAdapterIsEmptyWithBadPriority()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->isEmpty('testQueue', 'BAD_PRIORITY');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->isEmpty('testQueue', 'BAD_PRIORITY');
         });
     }
 
@@ -266,21 +266,21 @@ class MemoryAdapter extends atoum\test
      */
     public function testMemoryAdapterListQueues()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueueOne');
-        $MemoryAdapter->createQueue('testQueueTwo');
-        $MemoryAdapter->createQueue('testQueueThree');
-        $this->given($MemoryAdapter)
-            ->array($MemoryAdapter->listQueues())->containsValues(['testQueueOne', 'testQueueTwo', 'testQueueThree']);
+        $memoryAdapter->createQueue('testQueueOne');
+        $memoryAdapter->createQueue('testQueueTwo');
+        $memoryAdapter->createQueue('testQueueThree');
+        $this->given($memoryAdapter)
+            ->array($memoryAdapter->listQueues())->containsValues(['testQueueOne', 'testQueueTwo', 'testQueueThree']);
     }
 
     public function testMemoryAdapterListQueuesEmpty()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->given($MemoryAdapter)
-            ->array($MemoryAdapter->listQueues())->isEmpty();
+        $this->given($memoryAdapter)
+            ->array($memoryAdapter->listQueues())->isEmpty();
     }
 
     /**
@@ -288,201 +288,201 @@ class MemoryAdapter extends atoum\test
      */
     public function testMemoryAdapterListQueuesWithPrefix()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueueOne');
-        $MemoryAdapter->createQueue('prefixTestQueueOne');
-        $MemoryAdapter->createQueue('testQueueTwo');
-        $MemoryAdapter->createQueue('prefixTestQueueTwo');
-        $MemoryAdapter->createQueue('testQueueThree');
-        $this->given($MemoryAdapter)
-            ->array($MemoryAdapter->listQueues('prefix'))->containsValues(['prefixTestQueueOne', 'prefixTestQueueTwo']);
+        $memoryAdapter->createQueue('testQueueOne');
+        $memoryAdapter->createQueue('prefixTestQueueOne');
+        $memoryAdapter->createQueue('testQueueTwo');
+        $memoryAdapter->createQueue('prefixTestQueueTwo');
+        $memoryAdapter->createQueue('testQueueThree');
+        $this->given($memoryAdapter)
+            ->array($memoryAdapter->listQueues('prefix'))->containsValues(['prefixTestQueueOne', 'prefixTestQueueTwo']);
     }
 
     public function testMemoryAdapterGetNumberMessagesWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->getNumberMessages('');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->getNumberMessages('');
         });
     }
 
     public function testMemoryAdapterGetNumberMessagesWithQueueDoesNotExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->getNumberMessages('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->getNumberMessages('testQueue');
         });
     }
 
     public function testMemoryAdapterGetNumberMessagesWithBadPriority()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->getNumberMessages('testQueue', 'BAD_PRIORITY');
+        $memoryAdapter->createQueue('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->getNumberMessages('testQueue', 'BAD_PRIORITY');
         });
     }
 
     public function testMemoryAdapterGetNumberMessages()
     {
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter($priorityHandler);
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter($priorityHandler);
 
-        $MemoryAdapter->createQueue('testQueue');
-        $this->given($MemoryAdapter)
-            ->integer($MemoryAdapter->getNumberMessages('testQueue'))->isEqualTo(0);
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $MemoryAdapter->addMessage('testQueue', 'test message high one', $priorityHandler->getHighest());
-        $MemoryAdapter->addMessage('testQueue', 'test message high two', $priorityHandler->getHighest());
-        $MemoryAdapter->addMessage('testQueue', 'test message low', $priorityHandler->getLowest());
-        $this->given($MemoryAdapter)
-            ->integer($MemoryAdapter->getNumberMessages('testQueue'))->isEqualTo(4);
+        $memoryAdapter->createQueue('testQueue');
+        $this->given($memoryAdapter)
+            ->integer($memoryAdapter->getNumberMessages('testQueue'))->isEqualTo(0);
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $memoryAdapter->addMessage('testQueue', 'test message high one', $priorityHandler->getHighest());
+        $memoryAdapter->addMessage('testQueue', 'test message high two', $priorityHandler->getHighest());
+        $memoryAdapter->addMessage('testQueue', 'test message low', $priorityHandler->getLowest());
+        $this->given($memoryAdapter)
+            ->integer($memoryAdapter->getNumberMessages('testQueue'))->isEqualTo(4);
     }
 
     public function testMemoryAdapterDeleteMessageWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->deleteMessage('', []);
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->deleteMessage('', []);
         });
     }
 
     public function testMemoryAdapterDeleteMessageWithEmptyMessage()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->deleteMessage('testQueue', []);
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->deleteMessage('testQueue', []);
         });
     }
 
     public function testMemoryAdapterDeleteMessageWithNoMessageId()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $message = $MemoryAdapter->getMessages('testQueue');
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $message = $memoryAdapter->getMessages('testQueue');
         $message = $message[0];
         unset($message['id']);
-        $this->exception(function() use($MemoryAdapter, $message) {
-            $MemoryAdapter->deleteMessage('testQueue', $message);
+        $this->exception(function() use($memoryAdapter, $message) {
+            $memoryAdapter->deleteMessage('testQueue', $message);
         });
     }
 
     public function testMemoryAdapterDeleteMessageWithNoMessagePriority()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $message = $MemoryAdapter->getMessages('testQueue');
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $message = $memoryAdapter->getMessages('testQueue');
         $message = $message[0];
         unset($message['priority']);
-        $this->exception(function() use($MemoryAdapter, $message) {
-            $MemoryAdapter->deleteMessage('testQueue', $message);
+        $this->exception(function() use($memoryAdapter, $message) {
+            $memoryAdapter->deleteMessage('testQueue', $message);
         });
     }
 
     public function testMemoryAdapterDeleteMessageWithBadMessage()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
         $message = 'test message';
-        $this->exception(function() use($MemoryAdapter, $message) {
-            $MemoryAdapter->deleteMessage('testQueue', $message);
+        $this->exception(function() use($memoryAdapter, $message) {
+            $memoryAdapter->deleteMessage('testQueue', $message);
         });
     }
 
     public function testMemoryAdapterDeleteMessageWithBadPriority()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $message = $MemoryAdapter->getMessages('testQueue');
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $message = $memoryAdapter->getMessages('testQueue');
         $message = $message[0];
         $message['priority'] = 'BAD_PRIORITY';
-        $this->exception(function() use($MemoryAdapter, $message) {
-            $MemoryAdapter->deleteMessage('testQueue', $message);
+        $this->exception(function() use($memoryAdapter, $message) {
+            $memoryAdapter->deleteMessage('testQueue', $message);
         });
     }
 
     public function testMemoryAdapterDeleteMessage()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $message = $MemoryAdapter->getMessages('testQueue');
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $message = $memoryAdapter->getMessages('testQueue');
         $message = $message[0];
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter->deleteMessage('testQueue', $message))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($memoryAdapter)
+            ->class($memoryAdapter->deleteMessage('testQueue', $message))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testMemoryAdapterGetMessagesWithEmptyQueueName()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->getMessages('');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->getMessages('');
         });
     }
 
     public function testMemoryAdapterGetMessagesWithQueueDoesNotExists()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->getMessages('testQueue');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->getMessages('testQueue');
         });
     }
 
     public function testMemoryAdapterGetMessagesWithBadPriority()
     {
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter();
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $this->exception(function() use($MemoryAdapter) {
-            $MemoryAdapter->getMessages('testQueue', 1, 'BAD_PRIORITY');
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $this->exception(function() use($memoryAdapter) {
+            $memoryAdapter->getMessages('testQueue', 1, 'BAD_PRIORITY');
         });
     }
 
     public function testMemoryAdapterGetMessages()
     {
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter($priorityHandler);
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter($priorityHandler);
 
-        $MemoryAdapter->createQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $MemoryAdapter->addMessage('testQueue', 'test message high one', $priorityHandler->getHighest());
-        $MemoryAdapter->addMessage('testQueue', 'test message high two', $priorityHandler->getHighest());
-        $MemoryAdapter->addMessage('testQueue', 'test message low', $priorityHandler->getLowest());
-        $this->given($MemoryAdapter)
-            ->array($MemoryAdapter->getMessages('testQueue', 4))->hasSize(4);
-        $MemoryAdapter->purgeQueue('testQueue');
-        $MemoryAdapter->addMessage('testQueue', 'test message');
-        $MemoryAdapter->addMessage('testQueue', 'test message high one', $priorityHandler->getHighest());
-        $MemoryAdapter->addMessage('testQueue', 'test message high two', $priorityHandler->getHighest());
-        $MemoryAdapter->addMessage('testQueue', 'test message low', $priorityHandler->getLowest());
-        $this->given($MemoryAdapter)
-            ->array($MemoryAdapter->getMessages('testQueue', 6))->hasSize(4);
+        $memoryAdapter->createQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $memoryAdapter->addMessage('testQueue', 'test message high one', $priorityHandler->getHighest());
+        $memoryAdapter->addMessage('testQueue', 'test message high two', $priorityHandler->getHighest());
+        $memoryAdapter->addMessage('testQueue', 'test message low', $priorityHandler->getLowest());
+        $this->given($memoryAdapter)
+            ->array($memoryAdapter->getMessages('testQueue', 4))->hasSize(4);
+        $memoryAdapter->purgeQueue('testQueue');
+        $memoryAdapter->addMessage('testQueue', 'test message');
+        $memoryAdapter->addMessage('testQueue', 'test message high one', $priorityHandler->getHighest());
+        $memoryAdapter->addMessage('testQueue', 'test message high two', $priorityHandler->getHighest());
+        $memoryAdapter->addMessage('testQueue', 'test message low', $priorityHandler->getLowest());
+        $this->given($memoryAdapter)
+            ->array($memoryAdapter->getMessages('testQueue', 6))->hasSize(4);
     }
 
     public function testMemoryAdapterGetPriorityHandler()
     {
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $MemoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter($priorityHandler);
+        $memoryAdapter = new \ReputationVIP\QueueClient\Adapter\MemoryAdapter($priorityHandler);
 
-        $this->given($MemoryAdapter)
-            ->class($MemoryAdapter->getPriorityHandler())->hasInterface('\ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface');
+        $this->given($memoryAdapter)
+            ->class($memoryAdapter->getPriorityHandler())->hasInterface('\ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface');
     }
 }
