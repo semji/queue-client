@@ -2,12 +2,10 @@
 
 namespace ReputationVIP\QueueClient;
 
-use InvalidArgumentException;
 use ReputationVIP\QueueClient\Adapter\AdapterInterface;
+use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\Adapter\NullAdapter;
-use ReputationVIP\QueueClient\Exception\ErrorException;
-use ReputationVIP\QueueClient\Exception\NoticeException;
-use ReputationVIP\QueueClient\Exception\WarningException;
+use ReputationVIP\QueueClient\Exception\QueueAliasException;
 
 class QueueClient implements QueueClientInterface
 {
@@ -78,12 +76,14 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws QueueAliasException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null)
     {
         $queues = $this->resolveAliasQueueName($queueName);
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new QueueAliasException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->getMessages($queues, $nbMsg, $priority);
         }
@@ -91,12 +91,14 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws QueueAliasException
      */
     public function deleteMessage($queueName, $message)
     {
         $queues = $this->resolveAliasQueueName($queueName);
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new QueueAliasException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             $this->adapter->deleteMessage($queues, $message);
         }
@@ -118,13 +120,15 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws QueueAliasException
      */
     public function isEmpty($queueName, $priority = null)
     {
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new QueueAliasException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->isEmpty($queues, $priority);
         }
@@ -132,13 +136,15 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws QueueAliasException
      */
     public function getNumberMessages($queueName, $priority = null)
     {
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new QueueAliasException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             return $this->adapter->getNumberMessages($queues, $priority);
         }
@@ -193,13 +199,15 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws QueueAliasException
      */
     public function purgeQueue($queueName, $priority = null)
     {
         $queues = $this->resolveAliasQueueName($queueName);
 
         if (is_array($queues)) {
-            throw new ErrorException('Alias ' . $queueName . ' as multiple queue link : ' . implode(' , ', $queues));
+            throw new QueueAliasException('Alias ' . $queueName . ' corresponds to several queues: ' . implode(' , ', $queues));
         } else {
             $this->adapter->purgeQueue($queues, $priority);
         }
@@ -227,20 +235,25 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws \InvalidArgumentException
+     * @throws QueueAliasException
+     * @throws QueueAccessException
      */
     public function addAlias($queueName, $alias)
     {
         $listQueues = $this->listQueues();
 
         if (empty($queueName)) {
-            throw new InvalidArgumentException('QueueName is empty.');
+            throw new \InvalidArgumentException('Queue name is empty.');
         }
 
         if (empty($alias)) {
-            throw new InvalidArgumentException('Alias is empty.');
+            throw new QueueAliasException('Alias is empty.');
         }
+
         if (!in_array($queueName, $listQueues)) {
-            throw new NoticeException('Alias created on unknown queue.');
+            throw new QueueAccessException('Attempting to create alias on unknown queue.');
         }
 
         if (empty($this->aliases[$alias])) {
@@ -255,6 +268,8 @@ class QueueClient implements QueueClientInterface
 
     /**
      * @inheritdoc
+     *
+     * @throws QueueAliasException
      */
     public function removeAlias($alias)
     {
@@ -265,7 +280,7 @@ class QueueClient implements QueueClientInterface
                 unset($this->aliases[$alias]);
             }
         } else {
-            throw new WarningException('No alias found.');
+            throw new QueueAliasException('No alias found.');
         }
         return $this;
     }

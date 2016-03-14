@@ -11,7 +11,6 @@ interface AdapterInterface
      * @param mixed  $message
      * @param string $priority
      * @param int $delaySeconds
-     * @throw InvalidArgumentException
      *
      * @return AdapterInterface
      */
@@ -23,14 +22,12 @@ interface AdapterInterface
      * @param int    $nbMsg
      *
      * @return array
-     * @throw InvalidArgumentException
      */
     public function getMessages($queueName, $nbMsg = 1, $priority = null);
 
     /**
      * @param string $queueName
      * @param array  $message
-     * @throw InvalidArgumentException
      *
      * @return AdapterInterface
      */
@@ -41,7 +38,6 @@ interface AdapterInterface
      * @param string $priority
      *
      * @return bool
-     * @throw InvalidArgumentException
      */
     public function isEmpty($queueName, $priority = null);
 
@@ -50,13 +46,11 @@ interface AdapterInterface
      * @param string $priority
      *
      * @return int
-     * @throw InvalidArgumentException
      */
     public function getNumberMessages($queueName, $priority = null);
 
     /**
      * @param string $queueName
-     * @throw InvalidArgumentException
      *
      * @return AdapterInterface
      */
@@ -64,7 +58,6 @@ interface AdapterInterface
 
     /**
      * @param string $queueName
-     * @throw InvalidArgumentException
      *
      * @return AdapterInterface
      */
@@ -73,7 +66,6 @@ interface AdapterInterface
     /**
      * @param string $sourceQueueName
      * @param string $targetQueueName
-     * @throw InvalidArgumentException
      *
      * @return AdapterInterface
      */
@@ -82,7 +74,6 @@ interface AdapterInterface
     /**
      * @param string $queueName
      * @param string $priority
-     * @throw InvalidArgumentException
      *
      * @return AdapterInterface
      */
@@ -92,7 +83,6 @@ interface AdapterInterface
      * @param string $prefix
      *
      * @return array
-     * @throw InvalidArgumentException
      */
     public function listQueues($prefix = '');
 
