@@ -653,7 +653,7 @@ class FileAdapter extends atoum\test
         $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
-        $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', $priorityHandler, $mockFs, $mockFinder, $mockLockHandlerFactory);
+        $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', $priorityHandler, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $mockFs->getMockController()->exists = true;
         $mockLockHandlerFactory->getMockController()->getLockHandler = function($repository) {
             $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
@@ -678,10 +678,10 @@ class FileAdapter extends atoum\test
             }
             return new ArrayIterator($mocksSplFileInfo);
         };
-        $FileAdapter = $FileAdapter->addMessage('testQueue', 'test Message one', null, 1);
+        $fileAdapter = $fileAdapter->addMessage('testQueue', 'test Message one', null, 1);
         sleep(1);
-        $this->given($FileAdapter)
-            ->class($FileAdapter)->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+        $this->given($fileAdapter)
+            ->class($fileAdapter)->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
     }
 
     public function testFileAdapterAddMessageWithEmptyQueueName()
