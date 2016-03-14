@@ -190,6 +190,7 @@ class FileAdapter extends atoum\test
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
         $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
 
+        $this->calling($mockFs)->exists = true;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->exception(function () use ($fileAdapter) {
             $fileAdapter->createQueue('');
