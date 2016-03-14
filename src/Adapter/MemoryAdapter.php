@@ -42,7 +42,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function addMessage($queueName, $message, $priority = null)
+    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
         if (null === $priority) {
             $priority = $this->priorityHandler->getDefault();
@@ -62,6 +62,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             $new_message = [
                 'id' => uniqid($queueName . $priority, true),
                 'time-in-flight' => null,
+                'delayed-until' => time() + $delaySeconds,
                 'Body' => serialize($message),
             ];
             /** @var SplQueue $splQueue */
@@ -141,7 +142,9 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         if (isset($this->queues[$queueName][$priority])) {
             foreach ($this->queues[$queueName][$priority] as $key => $message) {
                 $timeDiff = time() - $message['time-in-flight'];
-                if (null === $message['time-in-flight'] || $timeDiff > self::MAX_TIME_IN_FLIGHT) {
+                if ((null === $message['time-in-flight'] || $timeDiff > self::MAX_TIME_IN_FLIGHT)
+                    && $message['delayed-until'] <= time()
+                ) {
                     $splQueueContent = $this->queues[$queueName][$priority][$key];
                     $splQueueContent['time-in-flight'] = time();
                     $this->queues[$queueName][$priority][$key] = $splQueueContent;

@@ -27,10 +27,11 @@ class AbstractAdapter
      * @param string $queueName
      * @param mixed  $message
      * @param string $priority
+     * @param int $delaySeconds
      *
      * @return AdapterInterface
      */
-    public function addMessage($queueName, $message, $priority = null)
+    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
     {
         return $this;
     }
