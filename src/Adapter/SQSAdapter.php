@@ -65,33 +65,33 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidArgumentException('Parameter queueName empty or not defined.');
         }
 
-        $batchMessages = [];
-        $batchesCount = 0;
-        $blockCounter = 0;
+        $i = 0;
+        $batch = [];
+        $totalMessagesCount = count($messages);
 
         foreach ($messages as $index => $message) {
             if (empty($message)) {
                 throw new InvalidArgumentException('Parameter message empty or not defined.');
             }
+
             $messageData = [
                 'Id' => (string) $index,
                 'MessageBody' => serialize($message)
             ];
-            if ($blockCounter >= self::SENT_MESSAGES_BATCH_SIZE) {
-                $blockCounter = 0;
-                $batchesCount++;
-            } else {
-                $blockCounter++;
-            }
-            $batchMessages[$batchesCount][] = $messageData;
-        }
 
-        foreach ($batchMessages as $messages) {
+            $batch[] = $messageData;
+
+            if (++$i < $totalMessagesCount && count($batch) < self::SENT_MESSAGES_BATCH_SIZE) {
+                continue;
+            }
+
             $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
             $this->sqsClient->sendMessageBatch([
                 'QueueUrl' => $queueUrl,
-                'Entries' => $messages,
+                'Entries' => $batch,
             ]);
+
+            $batch = [];
         }
 
         return $this;
