@@ -54,15 +54,19 @@ class SQSAdapter extends atoum\test
         $this->mockGenerator->shuntParentClassCalls();
         $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
         $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
-        $SQSAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient);
 
         $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
             return $mockQueueUrlModel;
         };
-        $mockSqsClient->getMockController()->sendMessageBatch = function () {
-        };
-        $this->given($SQSAdapter)
-            ->class($SQSAdapter->addMessages('testQueue', array_fill(0, 11, 'test message')))->hasInterface('\ReputationVIP\QueueClient\Adapter\AdapterInterface');
+
+        $mockSqsClient->getMockController()->sendMessageBatch = function () {};
+
+        $this
+            ->if($mockSqsClient)
+            ->and($sqsAdapter->addMessages('testQueue', array_fill(0, 11, 'test message')))
+            ->mock($mockSqsClient)
+                ->call('sendMessageBatch')->twice();
     }
 
     public function testSQSAdapterAddMessagesWithEmptyMessage()
