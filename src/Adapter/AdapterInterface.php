@@ -2,6 +2,7 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 
 interface AdapterInterface
@@ -9,21 +10,21 @@ interface AdapterInterface
     /**
      * @param string $queueName
      * @param mixed  $message
-     * @param string $priority
+     * @param Priority $priority
      * @param int $delaySeconds
      *
      * @return AdapterInterface
      */
-    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0);
+    public function addMessage($queueName, $message, Priority $priority = null, $delaySeconds = 0);
 
     /**
      * @param string $queueName
-     * @param string $priority
      * @param int    $nbMsg
+     * @param Priority $priority
      *
      * @return array
      */
-    public function getMessages($queueName, $nbMsg = 1, $priority = null);
+    public function getMessages($queueName, $nbMsg = 1, Priority $priority = null);
 
     /**
      * @param string $queueName
@@ -35,19 +36,19 @@ interface AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return bool
      */
-    public function isEmpty($queueName, $priority = null);
+    public function isEmpty($queueName, Priority $priority = null);
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return int
      */
-    public function getNumberMessages($queueName, $priority = null);
+    public function getNumberMessages($queueName, Priority $priority = null);
 
     /**
      * @param string $queueName
@@ -73,11 +74,11 @@ interface AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return AdapterInterface
      */
-    public function purgeQueue($queueName, $priority = null);
+    public function purgeQueue($queueName, Priority $priority = null);
 
     /**
      * @param string $prefix

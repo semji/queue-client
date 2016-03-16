@@ -4,6 +4,7 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use Aws\Sqs\Exception\SqsException;
 use Aws\Sqs\SqsClient;
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
@@ -25,14 +26,14 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
 
     /**
      * @param string $queueName
-     * @param string $priority
+     * @param Priority $priority
      *
      * @return string
      */
-    private function getQueueNameWithPrioritySuffix($queueName, $priority) {
+    private function getQueueNameWithPrioritySuffix($queueName, Priority $priority) {
         $prioritySuffix = '';
-        if ('' !== $priority) {
-            $prioritySuffix = static::PRIORITY_SEPARATOR . $priority;
+        if ('' !== $priority->getName()) {
+            $prioritySuffix = static::PRIORITY_SEPARATOR . $priority->getName();
         }
 
         return $queueName . $prioritySuffix;
@@ -61,7 +62,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @throws InvalidMessageException
      * @throws QueueAccessException
      */
-    public function addMessages($queueName, $messages, $priority = null)
+    public function addMessages($queueName, $messages, Priority $priority = null)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -114,7 +115,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
+    public function addMessage($queueName, $message, Priority $priority = null, $delaySeconds = 0)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -149,7 +150,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    public function getMessages($queueName, $nbMsg = 1, $priority = null)
+    public function getMessages($queueName, $nbMsg = 1, Priority $priority = null)
     {
         if (null === $priority) {
             $priorities = $this->priorityHandler->getAll();
@@ -192,7 +193,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
         foreach ($messages as $messageId => $message) {
             $messages[$messageId]['Body'] = unserialize($message['Body']);
-            $messages[$messageId]['priority'] = $priority;
+            $messages[$messageId]['priority'] = $priority->getLevel();
         }
 
         return $messages;
@@ -224,8 +225,10 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             throw new InvalidMessageException('Priority not found in message.');
         }
 
+        $priority = $this->priorityHandler->getPriorityByLevel($message['priority']);
+
         try {
-            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $message['priority'])])->get('QueueUrl');
+            $queueUrl = $this->sqsClient->getQueueUrl(['QueueName' => $this->getQueueNameWithPrioritySuffix($queueName, $priority)])->get('QueueUrl');
             $this->sqsClient->deleteMessage([
                 'QueueUrl' => $queueUrl,
                 'ReceiptHandle' => $message['ReceiptHandle'],
@@ -243,7 +246,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    public function isEmpty($queueName, $priority = null)
+    public function isEmpty($queueName, Priority $priority = null)
     {
         if (null === $priority) {
             $priorities = $this->priorityHandler->getAll();
@@ -282,7 +285,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    public function getNumberMessages($queueName, $priority = null)
+    public function getNumberMessages($queueName, Priority $priority = null)
     {
         $nbrMsg = 0;
 
@@ -412,7 +415,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    public function purgeQueue($queueName, $priority = null)
+    public function purgeQueue($queueName, Priority $priority = null)
     {
         if (null === $priority) {
             $priorities = $this->priorityHandler->getAll();
@@ -469,7 +472,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
             $priorities = $this->priorityHandler->getAll();
             foreach ($priorities as $priority) {
                 if (!empty($priority)) {
-                    $result = str_replace(static::PRIORITY_SEPARATOR . $priority, '', $result);
+                    $result = str_replace(static::PRIORITY_SEPARATOR . $priority->getName(), '', $result);
                 }
             }
             $listQueues[] = $result;

@@ -2,6 +2,7 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
 
@@ -26,7 +27,7 @@ class NullAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function getMessages($queueName, $nbMsg = 1, $priority = null)
+    public function getMessages($queueName, $nbMsg = 1, Priority $priority = null)
     {
         return [];
     }
@@ -34,7 +35,7 @@ class NullAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function deleteMessage($queueName, $message, $priority = null)
+    public function deleteMessage($queueName, $message, Priority $priority = null)
     {
         return $this;
     }
@@ -42,7 +43,7 @@ class NullAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function isEmpty($queueName, $priority = null)
+    public function isEmpty($queueName, Priority $priority = null)
     {
         return true;
     }
@@ -50,7 +51,7 @@ class NullAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function getNumberMessages($queueName, $priority = null)
+    public function getNumberMessages($queueName, Priority $priority = null)
     {
         return 0;
     }
@@ -82,7 +83,7 @@ class NullAdapter extends AbstractAdapter implements AdapterInterface
     /**
      * @inheritdoc
      */
-    public function purgeQueue($queueName, $priority = null)
+    public function purgeQueue($queueName, Priority $priority = null)
     {
         return $this;
     }

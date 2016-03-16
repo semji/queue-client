@@ -63,6 +63,10 @@ To launch unit tests, run the following command:
 
 ```php vendor/atoum/atoum/bin/atoum -c coverage.php -d tests/units/```
 
+OR
+
+```make test``` (docker and docker-compose are required)
+
 **php xdebug extension must be installed for code coverage report to be generated**
 
 ## Documentation

@@ -2,6 +2,7 @@
 
 namespace ReputationVIP\QueueClient\Adapter;
 
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\PriorityHandler\Exception\InvalidPriorityException;
@@ -49,7 +50,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
-    public function addMessage($queueName, $message, $priority = null, $delaySeconds = 0)
+    public function addMessage($queueName, $message, Priority $priority = null, $delaySeconds = 0)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -67,18 +68,18 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
-        if (isset($this->queues[$queueName][$priority])) {
+        if (isset($this->queues[$queueName][$priority->getName()])) {
             $new_message = [
-                'id' => uniqid($queueName . $priority, true),
+                'id' => uniqid($queueName . $priority->getName(), true),
                 'time-in-flight' => null,
                 'delayed-until' => time() + $delaySeconds,
                 'Body' => serialize($message),
             ];
             /** @var SplQueue $splQueue */
-            $splQueue = $this->queues[$queueName][$priority];
+            $splQueue = $this->queues[$queueName][$priority->getName()];
             $splQueue->enqueue($new_message);
         } else {
-            throw new InvalidPriorityException('Unknown priority: ' . $priority);
+            throw new InvalidPriorityException('Unknown priority: ' . $priority->getName());
         }
 
         return $this;
@@ -134,7 +135,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
-    public function getMessages($queueName, $nbMsg = 1, $priority = null)
+    public function getMessages($queueName, $nbMsg = 1, Priority $priority = null)
     {
         $messages = [];
 
@@ -160,18 +161,18 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
 
-        if (isset($this->queues[$queueName][$priority])) {
-            foreach ($this->queues[$queueName][$priority] as $key => $message) {
+        if (isset($this->queues[$queueName][$priority->getName()])) {
+            foreach ($this->queues[$queueName][$priority->getName()] as $key => $message) {
                 $timeDiff = time() - $message['time-in-flight'];
                 if ((null === $message['time-in-flight'] || $timeDiff > self::MAX_TIME_IN_FLIGHT)
                     && $message['delayed-until'] <= time()
                 ) {
-                    $splQueueContent = $this->queues[$queueName][$priority][$key];
+                    $splQueueContent = $this->queues[$queueName][$priority->getName()][$key];
                     $splQueueContent['time-in-flight'] = time();
-                    $this->queues[$queueName][$priority][$key] = $splQueueContent;
+                    $this->queues[$queueName][$priority->getName()][$key] = $splQueueContent;
                     $message['time-in-flight'] = time();
                     $message['Body'] = unserialize($message['Body']);
-                    $message['priority'] = $priority;
+                    $message['priority'] = $priority->getName();
                     $messages[] = $message;
                     --$nbMsg;
                     if (0 === $nbMsg) {
@@ -180,7 +181,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
                 }
             }
         } else {
-            throw new InvalidPriorityException('Unknown priority: ' . $priority);
+            throw new InvalidPriorityException('Unknown priority: ' . $priority->getName());
         }
 
         return $messages;
@@ -193,7 +194,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
-    public function isEmpty($queueName, $priority = null)
+    public function isEmpty($queueName, Priority $priority = null)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -211,12 +212,12 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         if (!isset($this->queues[$queueName])) {
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
-        if (!isset($this->queues[$queueName][$priority])) {
-            throw new InvalidPriorityException('Unknown priority: ' . $priority);
+        if (!isset($this->queues[$queueName][$priority->getName()])) {
+            throw new InvalidPriorityException('Unknown priority: ' . $priority->getName());
         }
 
         /** @var SplQueue $splQueue */
-        $splQueue = $this->queues[$queueName][$priority];
+        $splQueue = $this->queues[$queueName][$priority->getName()];
         return $splQueue->isEmpty();
     }
 
@@ -227,7 +228,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
-    public function getNumberMessages($queueName, $priority = null)
+    public function getNumberMessages($queueName, Priority $priority = null)
     {
         $nbrMsg = 0;
 
@@ -247,11 +248,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         if (!isset($this->queues[$queueName])) {
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
-        if (!isset($this->queues[$queueName][$priority])) {
-            throw new InvalidPriorityException('Unknown priority: ' . $priority);
+        if (!isset($this->queues[$queueName][$priority->getName()])) {
+            throw new InvalidPriorityException('Unknown priority: ' . $priority->getName());
         }
 
-        foreach ($this->queues[$queueName][$priority] as $key => $message) {
+        foreach ($this->queues[$queueName][$priority->getName()] as $key => $message) {
             $timeDiff = time() - $message['time-in-flight'];
             if (null === $message['time-in-flight'] || $timeDiff > self::MAX_TIME_IN_FLIGHT) {
                 ++$nbrMsg;
@@ -304,7 +305,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
 
         $priorities = $this->priorityHandler->getAll();
         foreach ($priorities as $priority) {
-            $this->queues[$queueName][$priority] = new SplQueue();
+            $this->queues[$queueName][$priority->getName()] = new SplQueue();
         }
 
         return $this;
@@ -348,7 +349,7 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
      * @throws QueueAccessException
      * @throws InvalidPriorityException
      */
-    public function purgeQueue($queueName, $priority = null)
+    public function purgeQueue($queueName, Priority $priority = null)
     {
         if (empty($queueName)) {
             throw new \InvalidArgumentException('Queue name empty or not defined.');
@@ -366,11 +367,11 @@ class MemoryAdapter extends AbstractAdapter implements AdapterInterface
         if (!isset($this->queues[$queueName])) {
             throw new QueueAccessException("Queue " . $queueName . " doesn't exist, please create it before using it.");
         }
-        if (!isset($this->queues[$queueName][$priority])) {
-            throw new InvalidPriorityException('Unknown priority: ' . $priority);
+        if (!isset($this->queues[$queueName][$priority->getName()])) {
+            throw new InvalidPriorityException('Unknown priority: ' . $priority->getName());
         }
 
-        $this->queues[$queueName][$priority] = new SplQueue();
+        $this->queues[$queueName][$priority->getName()] = new SplQueue();
 
         return $this;
     }

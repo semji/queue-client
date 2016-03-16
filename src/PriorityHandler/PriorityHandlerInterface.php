@@ -2,45 +2,21 @@
 
 namespace ReputationVIP\QueueClient\PriorityHandler;
 
+use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
+
 interface PriorityHandlerInterface
 {
     /**
-     * @param string $name
+     * @param Priority $priority
      * @return PriorityHandlerInterface
      */
-    public function add($name);
+    public function add(Priority $priority);
 
     /**
-     * @param string $name
+     * @param Priority $priority
      * @return PriorityHandlerInterface
      */
-    public function remove($name);
-
-    /**
-     * @param string $addName
-     * @param string $beforeName
-     * @return PriorityHandlerInterface
-     */
-    public function addBefore($addName, $beforeName);
-
-    /**
-     * @param string $beforeName
-     * @return PriorityHandlerInterface
-     */
-    public function removeBefore($beforeName);
-
-    /**
-     * @param string $addName
-     * @param string $afterName
-     * @return PriorityHandlerInterface
-     */
-    public function addAfter($addName, $afterName);
-
-    /**
-     * @param string $afterName
-     * @return PriorityHandlerInterface
-     */
-    public function removeAfter($afterName);
+    public function remove(Priority $priority);
 
     /**
      * @return PriorityHandlerInterface
@@ -48,52 +24,58 @@ interface PriorityHandlerInterface
     public function clear();
 
     /**
-     * @param $name
+     * @param string $name
      * @return boolean
      */
     public function has($name);
 
     /**
-     * @param int $index
-     * @return string
-     */
-    public function getName($index);
-
-    /**
-     * @return string
+     * @return Priority
      */
     public function getDefault();
 
     /**
-     * @param string $newDefault
+     * @param Priority $priority
      * @return PriorityHandlerInterface
      */
-    public function setDefault($newDefault);
+    public function setDefault(Priority $priority);
 
     /**
-     * @return string
+     * @param string $name
+     * @return Priority
+     */
+    public function getPriorityByName($name);
+
+    /**
+     * @param integer $level
+     * @return Priority
+     */
+    public function getPriorityByLevel($level);
+
+    /**
+     * @return Priority
      */
     public function getHighest();
 
     /**
-     * @return string
+     * @return Priority
      */
     public function getLowest();
 
     /**
-     * @param string $beforeName
-     * @return string
+     * @param Priority $priority
+     * @return Priority
      */
-    public function getBefore($beforeName);
+    public function getBefore(Priority $priority);
 
     /**
-     * @param string $afterName
-     * @return string
+     * @param Priority $priority
+     * @return Priority
      */
-    public function getAfter($afterName);
+    public function getAfter(Priority $priority);
 
     /**
-     * @return array
+     * @return Priority[]
      */
     public function getAll();
 

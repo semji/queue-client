@@ -1,0 +1,10 @@
+web_test:
+    image: nginx
+    volumes:
+      - "./codeCoverage:/usr/share/nginx/html:ro"
+    ports:
+      - "8080:80"
+test:
+    build: docker/test
+    volumes:
+      - ".:/data"
