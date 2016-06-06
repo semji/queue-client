@@ -260,7 +260,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($message)) {
-            throw new InvalidMessageException('Message empty or not defined.');
+            throw new InvalidMessageException($message, 'Message empty or not defined.');
         }
 
         if (null === $priority) {
@@ -453,19 +453,19 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($message)) {
-            throw new InvalidMessageException('Message empty or not defined.');
+            throw new InvalidMessageException($message, 'Message empty or not defined.');
         }
 
         if (!is_array($message)) {
-            throw new InvalidMessageException('Message must be an array.');
+            throw new InvalidMessageException($message, 'Message must be an array.');
         }
 
         if (!isset($message['id'])) {
-            throw new InvalidMessageException('Message id not found in message.');
+            throw new InvalidMessageException($message, 'Message id not found in message.');
         }
 
         if (!isset($message['priority'])) {
-            throw new InvalidMessageException('Message priority not found in message.');
+            throw new InvalidMessageException($message, 'Message priority not found in message.');
         }
 
         $priority = $this->priorityHandler->getPriorityByLevel($message['priority']);

@@ -78,7 +78,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
 
         foreach ($messages as $index => $message) {
             if (empty($message)) {
-                throw new InvalidMessageException('Message empty or not defined.');
+                throw new InvalidMessageException($message, 'Message empty or not defined.');
             }
 
             $messageData = [
@@ -122,7 +122,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($message)) {
-            throw new InvalidMessageException('Message empty or not defined.');
+            throw new InvalidMessageException($message, 'Message empty or not defined.');
         }
 
         if (null === $priority) {
@@ -213,16 +213,16 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         if (empty($message)) {
-            throw new InvalidMessageException('Message empty or not defined.');
+            throw new InvalidMessageException($message, 'Message empty or not defined.');
         }
         if (!is_array($message)) {
-            throw new InvalidMessageException('Message must be an array.');
+            throw new InvalidMessageException($message, 'Message must be an array.');
         }
         if (!isset($message['ReceiptHandle'])) {
-            throw new InvalidMessageException('ReceiptHandle not found in message.');
+            throw new InvalidMessageException($message, 'ReceiptHandle not found in message.');
         }
         if (!isset($message['priority'])) {
-            throw new InvalidMessageException('Priority not found in message.');
+            throw new InvalidMessageException($message, 'Priority not found in message.');
         }
 
         $priority = $this->priorityHandler->getPriorityByLevel($message['priority']);
