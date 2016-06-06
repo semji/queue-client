@@ -4,7 +4,7 @@ namespace ReputationVIP\QueueClient\Adapter;
 
 use Aws\Sqs\Exception\SqsException;
 use Aws\Sqs\SqsClient;
-use ReputationVIP\QueueClient\Exception\MalformedMessageException;
+use ReputationVIP\QueueClient\Adapter\Exception\MalformedMessageException;
 use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
 use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
@@ -196,6 +196,13 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         foreach ($messages as $messageId => $message) {
             try {
                 $messages[$messageId]['Body'] = unserialize($message['Body']);
+
+                // for php 7 compatibility
+                if (false === $messages[$messageId]['Body']) {
+                    $message['priority'] = $priority->getLevel();
+
+                    throw new MalformedMessageException($message, 'Message seems to be malformed.');
+                }
             } catch (\Exception $e) {
                 $message['priority'] = $priority->getLevel();
 

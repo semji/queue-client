@@ -1,7 +1,5 @@
 <?php
 
-namespace ReputationVIP\QueueClient\Exception;
-
-use ReputationVIP\QueueClient\Adapter\Exception\InvalidMessageException;
+namespace ReputationVIP\QueueClient\Adapter\Exception;
 
 class MalformedMessageException extends InvalidMessageException {}
