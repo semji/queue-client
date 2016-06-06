@@ -195,7 +195,7 @@ class SQSAdapter extends AbstractAdapter implements AdapterInterface
         }
         foreach ($messages as $messageId => $message) {
             try {
-                $messages[$messageId]['Body'] = unserialize($message['Body']);
+                $messages[$messageId]['Body'] = @unserialize($message['Body']);
 
                 // for php 7 compatibility
                 if (false === $messages[$messageId]['Body']) {
