@@ -827,4 +827,28 @@ class SQSAdapter extends atoum\test
         $this->given($sqsAdapter)
             ->class($sqsAdapter->getPriorityHandler())->hasInterface('\ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface');
     }
+
+    public function testMalformedMessageException()
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $this->mockGenerator->shuntParentClassCalls();
+        $mockSqsClient = new \mock\Aws\Sqs\SqsClient;
+        $mockQueueUrlModel = new \mock\Guzzle\Service\Resource\Model;
+        $priorityHandler = new ThreeLevelPriorityHandler();
+        $sqsAdapter = new \ReputationVIP\QueueClient\Adapter\SQSAdapter($mockSqsClient, $priorityHandler);
+
+        $mockSqsClient->getMockController()->getQueueUrl = function () use($mockQueueUrlModel) {
+            return $mockQueueUrlModel;
+        };
+        $mockQueueUrlModel->getMockController()->get = function () use($mockQueueUrlModel) {
+            return [['Body' => 'test message one']];
+        };
+        $mockSqsClient->getMockController()->receiveMessage = function () use($mockQueueUrlModel) {
+            return $mockQueueUrlModel;
+        };
+        $this->exception(function() use($sqsAdapter) {
+            $sqsAdapter->getMessages('testQueue', 1);
+        })->isInstanceOf('\ReputationVIP\QueueClient\Adapter\Exception\MalformedMessageException');
+    }
+
 }
