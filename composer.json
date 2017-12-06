@@ -8,8 +8,9 @@
     }
   ],
   "require": {
-    "symfony/filesystem": ">=2.7",
-    "symfony/finder": ">=2.7",
+    "symfony/filesystem": ">=3.4",
+    "symfony/finder": ">=3.4",
+    "symfony/lock": ">=3.4",
     "aws/aws-sdk-php": ">=2.7"
   },
   "require-dev": {
