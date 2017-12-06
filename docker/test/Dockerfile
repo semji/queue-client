@@ -1,4 +1,4 @@
-FROM php:7
+FROM php:7.1
 
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug

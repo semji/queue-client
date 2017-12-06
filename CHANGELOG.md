@@ -1,5 +1,9 @@
 # Queue Client Changelog
 
+## v2.0.0
+
+- Use new Symfony/Lock component in Filesystem handler
+
 ## v1.0.3
 
 - Use Priority objects instead of string

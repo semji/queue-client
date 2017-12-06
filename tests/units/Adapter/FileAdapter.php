@@ -8,18 +8,15 @@ use ReputationVIP\QueueClient\PriorityHandler\ThreeLevelPriorityHandler;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+use Symfony\Component\Lock\Factory;
 
 class MockIOExceptionInterface extends \Exception implements IOExceptionInterface
 {
-
     public function getPath()
     {
         return '';
     }
 }
-
-;
 
 class FileAdapter extends atoum\test
 {
@@ -33,17 +30,20 @@ class FileAdapter extends atoum\test
         $this->object(new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/'));
     }
 
-    public function testFileAdapter__constructWithFilesystemError(Filesystem $fs, Finder $finder, LockHandlerFactory $lockHandlerFactory)
+    public function testFileAdapter__constructWithFilesystemError(Filesystem $fs, Finder $finder)
     {
-        $this->exception(function () use ($fs, $finder, $lockHandlerFactory) {
-            $this->newTestedInstance('', null, $fs, $finder, $lockHandlerFactory);
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
+
+        $this->exception(function () use ($fs, $finder, $mockLockHandlerFactory) {
+            $this->newTestedInstance('', null, $fs, $finder, $mockLockHandlerFactory);
         });
 
         $this->calling($fs)->mkdir->throw = new MockIOExceptionInterface;
         $this->calling($fs)->exists = false;
 
-        $this->exception(function () use ($fs, $finder, $lockHandlerFactory) {
-            $this->newTestedInstance('/tmp/test/', null, $fs, $finder, $lockHandlerFactory);
+        $this->exception(function () use ($fs, $finder, $mockLockHandlerFactory) {
+            $this->newTestedInstance('/tmp/test/', null, $fs, $finder, $mockLockHandlerFactory);
         });
     }
 
@@ -53,12 +53,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $this->calling($mockFs)->exists = true;
-        $this->calling($mockLockHandlerFactory)->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $this->calling($mockLockHandlerFactory)->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -72,7 +73,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $this->calling($mockFs)->exists = true;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -87,12 +89,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $this->calling($mockFs)->exists = false;
-        $this->calling($mockLockHandlerFactory)->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $this->calling($mockLockHandlerFactory)->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -107,12 +110,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $this->calling($mockFs)->exists = true;
-        $this->calling($mockLockHandlerFactory)->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = false;
+        $this->calling($mockLockHandlerFactory)->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = false;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -127,11 +131,12 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -146,11 +151,12 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFs->getMockController()->exists = false;
@@ -169,11 +175,12 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = false;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = false;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -189,7 +196,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $this->calling($mockFs)->exists = true;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -204,7 +212,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -219,7 +228,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = false;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -234,13 +244,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -280,7 +291,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = false;
         $FileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -295,7 +307,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->exception(function () use ($fileAdapter) {
@@ -309,12 +322,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = false;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = false;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -329,13 +343,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -376,13 +391,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -423,13 +439,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -472,13 +489,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -512,7 +530,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -527,7 +546,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = false;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -542,13 +562,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -589,13 +610,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -636,7 +658,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -675,7 +698,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -714,7 +738,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFinder->getMockController()->getIterator = function () {
             return new ArrayIterator([]);
@@ -732,13 +757,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -776,14 +802,15 @@ class FileAdapter extends atoum\test
     {
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', $priorityHandler, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -816,7 +843,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->exception(function () use ($fileAdapter) {
@@ -830,7 +858,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = false;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -845,12 +874,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -865,12 +895,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = false;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = false;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -885,13 +916,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -932,13 +964,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -979,7 +1012,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->exception(function () use ($fileAdapter) {
@@ -993,7 +1027,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = false;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1008,12 +1043,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = false;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = false;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1028,13 +1064,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1075,13 +1112,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1122,13 +1160,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1160,7 +1199,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->exception(function () use ($fileAdapter) {
@@ -1174,7 +1214,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = false;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1189,12 +1230,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1209,12 +1251,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1232,12 +1275,13 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = false;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = false;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1252,13 +1296,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1299,13 +1344,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1346,13 +1392,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1386,7 +1433,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->exception(function () use ($fileAdapter) {
@@ -1400,7 +1448,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = false;
@@ -1416,7 +1465,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = false;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1431,7 +1481,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
@@ -1447,7 +1498,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1462,7 +1514,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $mockFs->getMockController()->exists = true;
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1477,13 +1530,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = false;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = false;
             return $mockLockHandler;
         };
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', $priorityHandler, $mockFs, $mockFinder, $mockLockHandlerFactory);
@@ -1498,13 +1552,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1545,13 +1600,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1592,13 +1648,14 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = true;
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1630,7 +1687,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->exception(function () use ($fileAdapter) {
@@ -1647,7 +1705,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $priorityHandler = new ThreeLevelPriorityHandler();
         $mockFs->getMockController()->exists = function ($queue) {
@@ -1656,9 +1715,9 @@ class FileAdapter extends atoum\test
             }
             return true;
         };
-        $mockLockHandlerFactory->getMockController()->getLockHandler = function ($repository) {
-            $mockLockHandler = new \mock\Symfony\Component\Filesystem\LockHandler($repository);
-            $mockLockHandler->getMockController()->lock = true;
+        $mockLockHandlerFactory->getMockController()->createLock = function ($repository) {
+            $mockLockHandler = new \mock\Symfony\Component\Lock\LockInterface;
+            $mockLockHandler->getMockController()->acquire = true;
             return $mockLockHandler;
         };
         $mockFinder->getMockController()->getIterator = function () use ($priorityHandler) {
@@ -1690,7 +1749,8 @@ class FileAdapter extends atoum\test
         $mockFs = new \mock\Symfony\Component\Filesystem\Filesystem;
         $this->mockGenerator->unshuntParentClassCalls();
         $mockFinder = new \mock\Symfony\Component\Finder\Finder;
-        $mockLockHandlerFactory = new \mock\ReputationVIP\QueueClient\Utils\LockHandlerFactory;
+        $this->mockGenerator->orphanize('__construct');
+        $mockLockHandlerFactory = new \mock\Symfony\Component\Lock\Factory;
 
         $fileAdapter = new \ReputationVIP\QueueClient\Adapter\FileAdapter('/tmp/test/', null, $mockFs, $mockFinder, $mockLockHandlerFactory);
         $this->given($fileAdapter)

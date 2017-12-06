@@ -7,12 +7,12 @@ use ReputationVIP\QueueClient\Adapter\Exception\QueueAccessException;
 use ReputationVIP\QueueClient\PriorityHandler\Priority\Priority;
 use ReputationVIP\QueueClient\PriorityHandler\PriorityHandlerInterface;
 use ReputationVIP\QueueClient\PriorityHandler\StandardPriorityHandler;
-use ReputationVIP\QueueClient\Utils\LockHandlerFactory;
-use ReputationVIP\QueueClient\Utils\LockHandlerFactoryInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\Store\FlockStore;
 
 class FileAdapter extends AbstractAdapter implements AdapterInterface
 {
@@ -31,7 +31,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     /** @var Filesystem $fs */
     private $fs;
 
-    /** @var LockHandlerFactoryInterface $fs */
+    /** @var Factory $lockHandlerFactory */
     private $lockHandlerFactory;
 
     /** @var PriorityHandlerInterface $priorityHandler */
@@ -42,12 +42,12 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
      * @param PriorityHandlerInterface $priorityHandler
      * @param Filesystem $fs
      * @param Finder $finder
-     * @param LockHandlerFactoryInterface $lockHandlerFactory
+     * @param Factory $lockHandlerFactory
      *
      * @throws \InvalidArgumentException
      * @throws QueueAccessException
      */
-    public function __construct($repository, PriorityHandlerInterface $priorityHandler = null, Filesystem $fs = null, Finder $finder = null, LockHandlerFactoryInterface $lockHandlerFactory = null)
+    public function __construct($repository, PriorityHandlerInterface $priorityHandler = null, Filesystem $fs = null, Finder $finder = null, Factory $lockHandlerFactory = null)
     {
         if (empty($repository)) {
             throw new \InvalidArgumentException('Argument repository empty or not defined.');
@@ -61,21 +61,22 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $finder = new Finder();
         }
 
-        if (null === $lockHandlerFactory) {
-            $lockHandlerFactory = new LockHandlerFactory();
-        }
-
         if (null === $priorityHandler) {
             $priorityHandler = new StandardPriorityHandler();
         }
 
         $this->fs = $fs;
+
         if (!$this->fs->exists($repository)) {
             try {
                 $this->fs->mkdir($repository);
             } catch (IOExceptionInterface $e) {
                 throw new QueueAccessException('An error occurred while creating your directory at ' . $e->getPath());
             }
+        }
+
+        if (null === $lockHandlerFactory) {
+            $lockHandlerFactory = new Factory(new FlockStore($repository));
         }
 
         $this->priorityHandler = $priorityHandler;
@@ -126,8 +127,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function readQueueFromFile($queueName, Priority $priority, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
-        $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
-        if (!$lockHandler->lock()) {
+        $lock = $this->lockHandlerFactory->createLock($queueFilePath);
+        if (!$lock->acquire()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
                 throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
@@ -148,10 +149,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             }
             $queue = json_decode($content, true);
         } catch (\Exception $e) {
-            $lockHandler->release();
+            $lock->release();
             throw $e;
         }
-        $lockHandler->release();
+        $lock->release();
 
         return $queue;
     }
@@ -170,8 +171,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function writeQueueInFile($queueName, Priority $priority, $queue, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
-        $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
-        if (!$lockHandler->lock()) {
+        $lock = $this->lockHandlerFactory->createLock($queueFilePath);
+        if (!$lock->acquire()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
                 throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
@@ -182,10 +183,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $queueJson = json_encode($queue);
             $this->fs->dumpFile($queueFilePath, $queueJson);
         } catch (\Exception $e) {
-            $lockHandler->release();
+            $lock->release();
             throw $e;
         }
-        $lockHandler->release();
+        $lock->release();
         return $this;
     }
 
@@ -205,8 +206,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function addMessageLock($queueName, $message, Priority $priority, $nbTries = 0, $delaySeconds = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
-        $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
-        if (!$lockHandler->lock()) {
+        $lock = $this->lockHandlerFactory->createLock($queueFilePath);
+        if (!$lock->acquire()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
                 throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
@@ -239,10 +240,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $queueJson = json_encode($queue);
             $this->fs->dumpFile($queueFilePath, $queueJson);
         } catch (\Exception $e) {
-            $lockHandler->release();
+            $lock->release();
             throw $e;
         }
-        $lockHandler->release();
+        $lock->release();
         return $this;
     }
 
@@ -291,8 +292,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function getMessagesLock($queueName, $nbMsg, Priority $priority, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
-        $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
-        if (!$lockHandler->lock()) {
+        $lock = $this->lockHandlerFactory->createLock($queueFilePath);
+        if (!$lock->acquire()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
                 throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
@@ -335,10 +336,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $queueJson = json_encode($queue);
             $this->fs->dumpFile($queueFilePath, $queueJson);
         } catch (\Exception $e) {
-            $lockHandler->release();
+            $lock->release();
             throw $e;
         }
-        $lockHandler->release();
+        $lock->release();
 
         return $messages;
     }
@@ -399,8 +400,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
     private function deleteMessageLock($queueName, $message, Priority $priority, $nbTries = 0)
     {
         $queueFilePath = $this->getQueuePath($queueName, $priority);
-        $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
-        if (!$lockHandler->lock()) {
+        $lock = $this->lockHandlerFactory->createLock($queueFilePath);
+        if (!$lock->acquire()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
                 throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
@@ -431,10 +432,10 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $queueJson = json_encode($queue);
             $this->fs->dumpFile($queueFilePath, $queueJson);
         } catch (\Exception $e) {
-            $lockHandler->release();
+            $lock->release();
             throw $e;
         }
-        $lockHandler->release();
+        $lock->release();
 
         return $this;
     }
@@ -570,8 +571,8 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
         }
 
         $queueFilePath = $this->getQueuePath($queueName, $priority);
-        $lockHandler = $this->lockHandlerFactory->getLockHandler($queueFilePath);
-        if (!$lockHandler->lock()) {
+        $lock = $this->lockHandlerFactory->createLock($queueFilePath);
+        if (!$lock->acquire()) {
             if ($nbTries >= static::MAX_LOCK_TRIES) {
                 throw new QueueAccessException('Reach max retry for locking queue file ' . $queueFilePath);
             }
@@ -579,7 +580,7 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             return $this->deleteQueueLock($queueName, $priority, ($nbTries + 1));
         }
         $this->fs->remove($queueFilePath);
-        $lockHandler->release();
+        $lock->release();
         return $this;
     }
 
