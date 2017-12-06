@@ -61,21 +61,22 @@ class FileAdapter extends AbstractAdapter implements AdapterInterface
             $finder = new Finder();
         }
 
-        if (null === $lockHandlerFactory) {
-            $lockHandlerFactory = new Factory(new FlockStore());
-        }
-
         if (null === $priorityHandler) {
             $priorityHandler = new StandardPriorityHandler();
         }
 
         $this->fs = $fs;
+
         if (!$this->fs->exists($repository)) {
             try {
                 $this->fs->mkdir($repository);
             } catch (IOExceptionInterface $e) {
                 throw new QueueAccessException('An error occurred while creating your directory at ' . $e->getPath());
             }
+        }
+
+        if (null === $lockHandlerFactory) {
+            $lockHandlerFactory = new Factory(new FlockStore($repository));
         }
 
         $this->priorityHandler = $priorityHandler;
