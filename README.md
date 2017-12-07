@@ -79,7 +79,7 @@ OR
 
 ### Requirements
 
-- PHP 5.5 or above.
+- PHP 7.1.3 or above.
 
 ### Submitting bugs and feature requests
 
@@ -87,7 +87,7 @@ Bugs and feature requests are tracked on [GitHub](https://github.com/ReputationV
 
 ### Framework Integrations
 
-- [Symfony2](http://symfony.com) with its own [Queue Client Bundle](https://github.com/ReputationVIP/queue-client-bundle).
+- [Symfony](http://symfony.com) with its own [Queue Client Bundle](https://github.com/ReputationVIP/queue-client-bundle).
 
 ### Author
 
