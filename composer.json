@@ -8,10 +8,10 @@
     }
   ],
   "require": {
-    "symfony/filesystem": ">=3.4",
-    "symfony/finder": ">=3.4",
-    "symfony/lock": ">=3.4",
-    "aws/aws-sdk-php": ">=2.7"
+    "symfony/filesystem": "^3.4",
+    "symfony/finder": "^3.4",
+    "symfony/lock": "^3.4",
+    "aws/aws-sdk-php": "^2.7"
   },
   "require-dev": {
     "atoum/atoum": "~3.1",
